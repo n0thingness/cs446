@@ -81,7 +81,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegistration();
                     return true;
                 }
                 return false;
@@ -93,7 +93,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegistration();
             }
         });
 
@@ -150,26 +150,30 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegistration() {
         if (mAuthTask != null) {
             return;
         }
 
         // Reset errors.
+        mNameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mPasswordConfirmView.setError(null);
 
         // Store values at the time of the login attempt.
+        String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String password_confirm = mPasswordConfirmView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        // Check for a valid name
+        if (TextUtils.isEmpty(name)) {
+            mNameView.setError(getString(R.string.error_field_required));
+            focusView = mNameView;
             cancel = true;
         }
 
@@ -183,6 +187,26 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             focusView = mEmailView;
             cancel = true;
         }
+
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password_confirm)) {
+            mPasswordConfirmView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordConfirmView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!TextUtils.equals(password, password_confirm)) {
+            mPasswordConfirmView.setError(getString(R.string.error_match_password));
+            focusView = mPasswordConfirmView;
+            cancel = true;
+        }
+
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
