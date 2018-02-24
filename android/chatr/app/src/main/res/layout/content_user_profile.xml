@@ -81,6 +81,78 @@
                     android:textStyle="bold"
                     android:id="@+id/info_header"
                     android:text="@string/profile_info" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:layout_below="@id/info_header"
+                    >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:text="@string/profile_info_gender" />
+
+                    <TextView
+                        android:id="@+id/profile_info_gender"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="2"
+                        android:gravity="start"
+                        android:layout_gravity="fill_horizontal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:text="@string/profile_info_age" />
+
+                    <TextView
+                        android:id="@+id/profile_info_age"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="2"
+                        android:gravity="start"
+                        android:layout_gravity="fill_horizontal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:text="@string/profile_info_occupation" />
+
+                    <TextView
+                        android:id="@+id/profile_info_occupation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="2"
+                        android:gravity="start"
+                        android:layout_gravity="fill_horizontal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:layout_gravity="fill_horizontal"
+                        android:text="@string/profile_info_location" />
+
+                    <TextView
+                        android:id="@+id/profile_info_location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="2"
+                        android:gravity="start"
+                        android:layout_gravity="fill_horizontal"/>
+                </GridLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

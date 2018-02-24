@@ -95,6 +95,17 @@ public class UserProfileActivity extends AppCompatActivity {
             topicContainer.addView(textView, llp);
         }
 
+        TextView tvInfoGender = (TextView) findViewById(R.id.profile_info_gender);
+        TextView tvInfoAge = (TextView) findViewById(R.id.profile_info_age);
+        TextView tvInfoOccupation = (TextView) findViewById(R.id.profile_info_occupation);
+        TextView tvInfoLocation = (TextView) findViewById(R.id.profile_info_location);
+
+        tvInfoGender.setText("Male");
+        tvInfoAge.setText("22");
+        tvInfoOccupation.setText("Student");
+        tvInfoLocation.setText("Waterloo");
+
+
 
 
 
