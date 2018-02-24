@@ -5,4 +5,7 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="card_header_text">14sp</dimen>
+    <dimen name="text_bubble_padding">8dp</dimen>
+    <dimen name="text_bubble_margin">4dp</dimen>
 </resources>
