@@ -1,17 +1,20 @@
 package io.chatr.chatr;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -64,9 +67,17 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         ImageView top_image = (ImageView) findViewById(R.id.place_image);
-        top_image.getLayoutParams().height = top_image.getLayoutParams().width;
 
-//        Glide.with(this).load("http://goo.gl/gEgYUd").into(top_image);
+        int screenWidthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+
+        top_image.getLayoutParams().width = screenWidthPixels;
+        top_image.getLayoutParams().height = screenWidthPixels;
+
+//        Log.d("height", String.valueOf(top_image.getLayoutParams().height));
+//        Log.d("width", String.valueOf(top_image.getLayoutParams().width));
+
+//        Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
