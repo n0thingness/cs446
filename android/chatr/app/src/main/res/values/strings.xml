@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">chatr</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_registration">Sign up</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -15,6 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
     <string name="title_activity_user_profile">UserProfileActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -112,4 +114,9 @@
     <string name="profile_info_age">Age</string>
     <string name="profile_info_location">Location</string>
     <string name="profile_info_occupation">Occupation</string>
+
+    <string name="prompt_name">Name</string>
+    <string name="prompt_password_confirm">Password (confirm)</string>
+    <string name="action_register">Create Account</string>
+    <string name="error_match_password">This password doesn\'t match</string>
 </resources>
