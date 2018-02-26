@@ -33,6 +33,9 @@
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCdVPREwIpGu0OO782x1coajnLjaQc8pEA"/>
     </application>
 
 </manifest>
