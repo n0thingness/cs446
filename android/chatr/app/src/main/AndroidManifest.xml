@@ -24,6 +24,9 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCdVPREwIpGu0OO782x1coajnLjaQc8pEA"/>
     </application>
 
 </manifest>
