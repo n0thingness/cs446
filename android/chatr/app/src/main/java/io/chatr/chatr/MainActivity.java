@@ -1,11 +1,9 @@
 package io.chatr.chatr;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
 
-        FloatingActionButton fabCheckIn = (FloatingActionButton) findViewById(R.id.fab_check_in);
+        FloatingActionButton fabCheckIn = (FloatingActionButton) findViewById(R.id.main_check_in_fab);
         fabCheckIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 locationCheckIn();
@@ -92,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openLogin(View view) {
-        Intent intent = new Intent(this, UserProfileActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 }
