@@ -8,18 +8,13 @@
     tools:context="io.chatr.chatr.UserProfileActivity"
     tools:showIn="@layout/activity_user_profile">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="@dimen/text_margin"-->
-        <!--android:text="@string/large_text" />-->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/topic_card"
+            android:id="@+id/user_profile_topics_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
@@ -31,6 +26,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/user_profile_topics_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -38,16 +34,15 @@
                     android:padding="8dp"
                     android:textSize="@dimen/card_header_text"
                     android:textStyle="bold"
-                    android:id="@+id/topic_header"
                     android:text="@string/profile_talk_about" />
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/topic_list"
+                    android:id="@+id/user_profile_topics_flex_list"
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/topic_header"
+                    android:layout_below="@id/user_profile_topics_header"
                     app:flexDirection="row"
                     app:flexWrap="wrap"
                     app:justifyContent="flex_start"
@@ -60,7 +55,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/info_card"
+            android:id="@+id/user_profile_info_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
@@ -72,6 +67,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/user_profile_info_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -79,14 +75,13 @@
                     android:padding="8dp"
                     android:textSize="@dimen/card_header_text"
                     android:textStyle="bold"
-                    android:id="@+id/info_header"
                     android:text="@string/profile_info" />
 
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:columnCount="2"
-                    android:layout_below="@id/info_header"
+                    android:layout_below="@id/user_profile_info_header"
                     >
 
                     <TextView
@@ -98,7 +93,7 @@
                         android:text="@string/profile_info_gender" />
 
                     <TextView
-                        android:id="@+id/profile_info_gender"
+                        android:id="@+id/user_profile_info_gender"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="2"
@@ -114,7 +109,7 @@
                         android:text="@string/profile_info_age" />
 
                     <TextView
-                        android:id="@+id/profile_info_age"
+                        android:id="@+id/user_profile_info_age"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="2"
@@ -130,7 +125,7 @@
                         android:text="@string/profile_info_occupation" />
 
                     <TextView
-                        android:id="@+id/profile_info_occupation"
+                        android:id="@+id/user_profile_info_occupation"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="2"
@@ -146,7 +141,7 @@
                         android:text="@string/profile_info_location" />
 
                     <TextView
-                        android:id="@+id/profile_info_location"
+                        android:id="@+id/user_profile_info_location"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="2"
@@ -155,11 +150,5 @@
                 </GridLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:id="@+id/second_image"
-            android:scaleType="centerCrop" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

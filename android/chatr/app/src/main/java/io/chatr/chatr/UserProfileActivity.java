@@ -2,19 +2,15 @@ package io.chatr.chatr;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -54,8 +50,7 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setNavigationIcon(R.drawable.ic_back);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.user_profile_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -66,7 +61,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        ImageView top_image = (ImageView) findViewById(R.id.place_image);
+        ImageView top_image = (ImageView) findViewById(R.id.user_profile_top_image);
 
         int screenWidthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 
@@ -80,7 +75,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.user_profile_message_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +86,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         setTitle("John Smith");
 
-        FlexboxLayout topicContainer = (FlexboxLayout) findViewById(R.id.topic_list);
+        FlexboxLayout topicContainer = (FlexboxLayout) findViewById(R.id.user_profile_topics_flex_list);
         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         int margin = getResources().getDimensionPixelSize(R.dimen.text_bubble_margin);
         int padding = getResources().getDimensionPixelSize(R.dimen.text_bubble_padding);
@@ -106,19 +101,14 @@ public class UserProfileActivity extends AppCompatActivity {
             topicContainer.addView(textView, llp);
         }
 
-        TextView tvInfoGender = (TextView) findViewById(R.id.profile_info_gender);
-        TextView tvInfoAge = (TextView) findViewById(R.id.profile_info_age);
-        TextView tvInfoOccupation = (TextView) findViewById(R.id.profile_info_occupation);
-        TextView tvInfoLocation = (TextView) findViewById(R.id.profile_info_location);
+        TextView tvInfoGender = (TextView) findViewById(R.id.user_profile_info_gender);
+        TextView tvInfoAge = (TextView) findViewById(R.id.user_profile_info_age);
+        TextView tvInfoOccupation = (TextView) findViewById(R.id.user_profile_info_occupation);
+        TextView tvInfoLocation = (TextView) findViewById(R.id.user_profile_info_location);
 
         tvInfoGender.setText("Male");
         tvInfoAge.setText("22");
         tvInfoOccupation.setText("Student");
         tvInfoLocation.setText("Waterloo");
-
-
-
-
-
     }
 }
