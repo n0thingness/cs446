@@ -10,9 +10,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="io.chatr.chatr.RegistrationActivity">
 
-    <!-- Login progress -->
+    <!-- Registration progress -->
     <ProgressBar
-        android:id="@+id/login_progress"
+        android:id="@+id/registration_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,12 +20,11 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/login_form"
+        android:id="@+id/registration_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -35,7 +34,7 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/name"
+                    android:id="@+id/registration_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_name"
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/email"
+                    android:id="@+id/registration_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
@@ -67,7 +66,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/registration_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
@@ -83,7 +82,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password_confirm"
+                    android:id="@+id/registration_password_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password_confirm"
@@ -97,7 +96,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/registration_submit_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

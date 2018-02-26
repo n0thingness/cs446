@@ -62,21 +62,23 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegistrationFormView;
+
+    private Button mRegistrationSubmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.registration_email);
         populateAutoComplete();
 
-        mNameView = (AutoCompleteTextView) findViewById(R.id.name);
+        mNameView = (AutoCompleteTextView) findViewById(R.id.registration_name);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.registration_password);
 
-        mPasswordConfirmView = (EditText) findViewById(R.id.password_confirm);
+        mPasswordConfirmView = (EditText) findViewById(R.id.registration_password_confirm);
         mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -89,16 +91,16 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         });
 
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mRegistrationSubmitButton = (Button) findViewById(R.id.registration_submit_button);
+        mRegistrationSubmitButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptRegistration();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mRegistrationFormView = findViewById(R.id.registration_form);
+        mProgressView = findViewById(R.id.registration_progress);
     }
 
     private void populateAutoComplete() {
@@ -242,12 +244,12 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegistrationFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -263,7 +265,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegistrationFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
