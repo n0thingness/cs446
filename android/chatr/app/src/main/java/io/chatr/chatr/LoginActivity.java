@@ -102,6 +102,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);
             }
         });
+
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     private void populateAutoComplete() {
@@ -147,11 +149,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // disable going back to the MainActivity
-        moveTaskToBack(true);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        // disable going back to the MainActivity
+//        moveTaskToBack(false);
+//    }
 
 
     /**
