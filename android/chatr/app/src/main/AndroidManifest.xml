@@ -37,7 +37,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCdVPREwIpGu0OO782x1coajnLjaQc8pEA" />
 
-        <activity android:name=".LocationProfileActivity"></activity>
+        <activity
+            android:name=".LocationProfileActivity"
+            android:label="@string/title_activity_location_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
