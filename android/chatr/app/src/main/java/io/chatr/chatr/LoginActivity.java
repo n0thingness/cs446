@@ -102,6 +102,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);
             }
         });
+
+        TextView mPasswordResetButton = findViewById(R.id.login_link_reset_password);
+        mPasswordResetButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), ResetPasswordActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void populateAutoComplete() {
