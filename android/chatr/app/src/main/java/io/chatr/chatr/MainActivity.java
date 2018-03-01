@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openLogin(View view) {
-        Intent intent = new Intent(this, UserProfileActivity.class);
+        Intent intent = new Intent(this, LocationProfileActivity.class);
         startActivity(intent);
     }
 }
