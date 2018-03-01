@@ -16,15 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_image"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/main_profile_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="61dp"
-            android:layout_marginTop="90dp"
-            android:src="@drawable/placeholder_cat"
+            android:src="@drawable/ic_launcher_background"
             app:civ_border_color="#FF000000"
             app:civ_border_width="2dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="61dp"
+            android:layout_marginTop="90dp"
             app:layout_constraintBottom_toTopOf="@+id/main_textView"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -34,7 +35,7 @@
             android:id="@+id/main_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome Kitty!"
+            android:text="Welcome Rafael!"
             android:textAppearance="@android:style/TextAppearance.Material.Title"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -48,19 +49,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:text="Please select your location"
+            android:text="Check in to your current location and start chatting"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_textView" />
+
+
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/main_check_in_fab"
-        android:layout_width="69dp"
-        android:layout_height="65dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_add_location_black_24dp"
         app:elevation="4dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:onClick="openLogin"
+        android:text="Logout" />
 </android.support.design.widget.CoordinatorLayout>

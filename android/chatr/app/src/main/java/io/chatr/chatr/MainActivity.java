@@ -5,8 +5,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -16,6 +18,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 locationCheckIn();
             }
         });
+
+        CircleImageView top_image = (CircleImageView) findViewById(R.id.main_profile_image);
+        Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
     }
 
     private boolean checkPlayServices() {
@@ -65,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
         switch(requestCode) {
             case REQUEST_PLACE_PICKER:
                 if (resultCode == AppCompatActivity.RESULT_OK) {
-                    Place place = PlacePicker.getPlace(this, data);
-                    String toastMsg = String.format("Place: %s", place.getName());
-                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+//                    Place place = PlacePicker.getPlace(this, data);
+//                    String toastMsg = String.format("Place: %s", place.getName());
+//                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this, LocationProfileActivity.class);
+                    startActivity(intent);
                 }
                 break;
             case REQUEST_GOOGLE_PLAY_SERVICES:
@@ -91,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openLogin(View view) {
-        Intent intent = new Intent(this, LocationProfileActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 }
