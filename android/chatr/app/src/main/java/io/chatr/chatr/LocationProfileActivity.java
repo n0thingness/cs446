@@ -69,8 +69,9 @@ public class LocationProfileActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-
-        Glide.with(this).load("http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg").into(top_image);
+        //Location image URL
+        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
+        Glide.with(this).load(url).into(top_image);
         setTitle("Williams Fresh Cafe");
     }
 
