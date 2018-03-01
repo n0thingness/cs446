@@ -39,10 +39,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
+                    android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:imeOptions="actionNext" />
+                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -73,14 +73,25 @@
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
 
-            <TextView android:id="@+id/login_link_registration"
+            <TextView
+                android:id="@+id/login_link_registration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:text="@string/prompt_registration"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:textSize="14sp"/>
+                android:text="@string/prompt_registration"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/login_link_reset_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Forget password? "
+                android:textSize="14sp" />
 
         </LinearLayout>
     </ScrollView>
