@@ -43,29 +43,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <Button
-            android:id="@+id/main_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
-            android:background="@color/colorPrimary"
-            android:onClick="openLogin"
-            android:text="Log in! "
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_textView" />
-
         <TextView
             android:id="@+id/help_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="39dp"
             android:layout_marginTop="14dp"
-            android:text="Please select your location before logging in "
-            app:layout_constraintBottom_toTopOf="@+id/main_button"
+            android:text="Please select your location"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_textView" />
@@ -74,11 +57,12 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/main_check_in_fab"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="69dp"
+        android:layout_height="65dp"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_add_location_black_24dp"
         app:elevation="4dp"
-        android:layout_gravity="bottom|end"
-        />
+        tools:layout_editor_absoluteX="516dp"
+        tools:layout_editor_absoluteY="809dp" />
 </android.support.design.widget.CoordinatorLayout>
