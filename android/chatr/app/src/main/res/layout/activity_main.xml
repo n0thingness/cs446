@@ -62,7 +62,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_add_location_black_24dp"
-        app:elevation="4dp"
-        tools:layout_editor_absoluteX="516dp"
-        tools:layout_editor_absoluteY="809dp" />
+        app:elevation="4dp" />
 </android.support.design.widget.CoordinatorLayout>
