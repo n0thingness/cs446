@@ -55,13 +55,13 @@
                 android:id="@+id/tabItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Left" />
+                android:text="@string/location_users" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Center" />
+                android:text="@string/location_info" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 
