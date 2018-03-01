@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //    @Override
 //    public void onBackPressed() {
 //        // disable going back to the MainActivity
-//        moveTaskToBack(false);
+//        moveTaskToBack(true);
 //    }
 
 
