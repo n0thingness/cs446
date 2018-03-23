@@ -1,9 +1,13 @@
 package io.chatr.chatr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -53,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
         CircleImageView top_image = (CircleImageView) findViewById(R.id.main_profile_image);
         Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        Log.d("auth", sharedPref.getString("auth", "none"));
+        if (sharedPref.getString("auth", null) == null) {
+            openLogin();
+        }
     }
 
     private boolean checkPlayServices() {
@@ -99,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openLogin(View view) {
+    public void openLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
