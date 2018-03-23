@@ -167,4 +167,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public void openUpdateProfileActivity(View view){
+        Intent intent = new Intent(this, UpdateUserProfileActivity.class);
+        startActivity(intent);
+    }
 }
