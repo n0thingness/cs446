@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d("auth", sharedPref.getString("auth", "none"));
+//        Log.d("auth", sharedPref.getString("auth", "none"));
         if (sharedPref.getString("auth", null) == null) {
             openLogin();
         }
