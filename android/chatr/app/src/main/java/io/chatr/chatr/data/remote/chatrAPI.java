@@ -6,6 +6,7 @@ package io.chatr.chatr.data.remote;
 
 import io.chatr.chatr.LoginActivity;
 import io.chatr.chatr.data.model.LoginRequest;
+import io.chatr.chatr.data.model.StringData;
 import io.chatr.chatr.data.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -24,4 +25,7 @@ public interface chatrAPI {
 
     @POST("users/login")
     Call<User> login(@Body LoginRequest body);
+
+    @GET("resource")
+    Call<StringData> getResource();
 }

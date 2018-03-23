@@ -1,14 +1,13 @@
 package io.chatr.chatr;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
@@ -21,9 +20,12 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.chatr.chatr.data.remote.ApiUtils;
-import io.chatr.chatr.data.remote.RetrofitClient;
+import io.chatr.chatr.data.model.StringData;
+import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
+
+    private TextView mWelcomeTextView;
+
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +64,16 @@ public class MainActivity extends AppCompatActivity {
         CircleImageView top_image = (CircleImageView) findViewById(R.id.main_profile_image);
         Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        mWelcomeTextView = (TextView) findViewById(R.id.welcome_text);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putString("auth", null);
+//        editor.commit();
+
 //        Log.d("auth", sharedPref.getString("auth", "none"));
         if (sharedPref.getString("auth", null) == null) {
-            openLogin();
+            openLogin(null);
         }
     }
 
@@ -97,6 +109,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String auth = sharedPref.getString("auth", null);
+
+        if (auth != null) {
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+
+            // Fetch a list of the Github repositories.
+            Call<StringData> call = api.getResource();
+
+            // Execute the call asynchronously. Get a positive or negative callback.
+            call.enqueue(new Callback<StringData>() {
+                @Override
+                public void onResponse(Call<StringData> call, Response<StringData> response) {
+                    // The network call was a success and we got a response
+                    // TODO: use the repository list and display it
+                    if (response.isSuccessful()) {
+                        if (response.body().getData() != null) {
+                            mWelcomeTextView.setText(response.body().getData());
+                        }
+                    } else {
+                        mWelcomeTextView.setText("Failed");
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<StringData> call, Throwable t) {
+                    // the network call was a failure
+                    // TODO: handle error
+                }
+            });
+
+        }
+
+//        mWelcomeTextView.setText("Hello");
+
+
+    }
+
     public void locationCheckIn() {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -109,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openLogin() {
+    public void openLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

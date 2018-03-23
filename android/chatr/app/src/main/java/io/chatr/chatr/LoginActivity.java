@@ -23,7 +23,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,11 +39,9 @@ import java.util.List;
 
 import io.chatr.chatr.data.model.LoginRequest;
 import io.chatr.chatr.data.model.User;
-import io.chatr.chatr.data.remote.ApiUtils;
+import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -346,7 +343,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            chatrAPI api = ApiUtils.getChatrService();
+
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
 
 //            api.login(new LoginRequest(mEmail, mPassword)).enqueue(new Callback<User>() {
 //                @Override
