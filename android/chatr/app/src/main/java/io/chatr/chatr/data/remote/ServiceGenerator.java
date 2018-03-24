@@ -46,7 +46,7 @@ public class ServiceGenerator {
     public static <S> S createService(Class<S> serviceClass, final String authToken) {
         if (!TextUtils.isEmpty(authToken)) {
             AuthenticationInterceptor interceptor =
-                    new AuthenticationInterceptor(authToken+":blah");
+                    new AuthenticationInterceptor(authToken);
 
             if (!httpClient.interceptors().contains(interceptor)) {
                 httpClient.addInterceptor(interceptor);
