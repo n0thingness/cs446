@@ -3,8 +3,11 @@ package io.chatr.chatr;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +33,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.chatr.chatr.data.model.LoginRequest;
+import io.chatr.chatr.data.model.User;
+import io.chatr.chatr.data.remote.ServiceGenerator;
+import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -39,6 +49,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    private User mUser;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -149,11 +161,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        // disable going back to the MainActivity
-//        moveTaskToBack(true);
-//    }
+    @Override
+    public void onBackPressed() {
+        // disable going back to the MainActivity
+        moveTaskToBack(true);
+    }
 
 
     /**
@@ -207,7 +219,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, LoginActivity.this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -320,33 +332,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private Context mContext;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, Context context) {
             mEmail = email;
             mPassword = password;
+            mContext = context;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
+
+//            api.login(new LoginRequest(mEmail, mPassword)).enqueue(new Callback<User>() {
+//                @Override
+//                public void onResponse(Call<User> call, Response<User> response) {
+//
+//                    if(response.isSuccessful()) {
+////                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+//                        mUser = response.body();
+//                        Log.d("response", mUser.getToken());
+//                    } else  {
+//                        Log.d("response", String.valueOf(response.code()));
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<User> call, Throwable t) {
+//                    Log.d("MainActivity", "error loading from API");
+//
+//                }
+//            });
+
+            Call<User> call = api.login(new LoginRequest(mEmail, mPassword));
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                mUser = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return (mUser != null);
         }
 
         @Override
@@ -355,6 +383,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.mContext);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("auth", mUser.getToken());
+                editor.commit();
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
