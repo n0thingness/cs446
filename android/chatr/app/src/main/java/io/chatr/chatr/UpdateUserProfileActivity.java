@@ -141,6 +141,8 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 //            mAuthTask = new UserLoginTask(email, password);
 //            mAuthTask.execute((Void) null);
 //        }
+
+
     }
 
     private boolean isEmailValid(String email) {
