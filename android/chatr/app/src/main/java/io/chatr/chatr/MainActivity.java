@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,16 +24,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
+
 public class MainActivity extends AppCompatActivity {
 
-    String API_URL = "http://uw-chatr-api.herokuapp.com";
-    String PATH = "/api/v1/location";
-
-    HttpRequest request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
+//    String API_URL = "http://uw-chatr-api.herokuapp.com";
+//    String PATH = "/api/v1/location";
+    String API_URL = "http://ptsv2.com/t/noo0l-1521930524/post";
+    String PATH = "";
 
 
     private static final int REQUEST_PLACE_PICKER = 1001;
@@ -92,22 +96,42 @@ public class MainActivity extends AppCompatActivity {
 
                     String place_name = String.valueOf(place.getName());
                     String place_id_str = place.getId();
+                    String place_address = String.valueOf(place.getAddress());
+                    String place_phone_no = String.valueOf(place.getPhoneNumber());
+                    List<Integer> place_types = place.getPlaceTypes();
+                    int place_price_level = place.getPriceLevel();
+                    float place_rating = place.getRating();
+
+
 
                     JSONObject location_data = new JSONObject();
                     try {
                         location_data.put("id", place_id_str);
                         location_data.put("location_name", place_name);
+                        location_data.put("location_address", place_address);
+                        location_data.put("location_phone_no", place_phone_no);
+                        location_data.put("location_types", place_types);
+                        location_data.put("location_price_level", place_price_level);
+                        location_data.put("location_rating", place_rating);
 
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     // Send a POST request to the server
+                    HttpRequest request = null;
+                    try {
+                        request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     try {
                         int httpCode = request.post(new JSONObject().toString());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+//                    Log.d("requesttest: ", "request finished, any error in trace?" );
 
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
