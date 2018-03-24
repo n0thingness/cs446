@@ -1,9 +1,8 @@
-package io.chatr.chatr;
-
 /**
  * Created by lohit.talasila on 2018-03-24.
  */
 
+package io.chatr.chatr;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
