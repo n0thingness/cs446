@@ -33,11 +33,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-//    String API_URL = "http://uw-chatr-api.herokuapp.com";
-//    String PATH = "/api/v1/location";
-    String API_URL = "http://ptsv2.com/t/noo0l-1521930524/post";
-    String PATH = "";
-
+    String API_URL = "http://uw-chatr-api.herokuapp.com";
+    String PATH = "/api/v1/location";
+    
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
