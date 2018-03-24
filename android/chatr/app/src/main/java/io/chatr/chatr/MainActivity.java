@@ -19,22 +19,30 @@ import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import android.os.AsyncTask;
-//import org.apache.http.client.HttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
-
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends AppCompatActivity {
-//    HttpRequest request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
+
+    String API_URL = "http://uw-chatr-api.herokuapp.com";
+    String PATH = "/api/v1/location";
+
+    HttpRequest request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
+
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
+
+    public MainActivity() throws IOException {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +90,25 @@ public class MainActivity extends AppCompatActivity {
                     String toastMsg = String.format("Place: %s", place.getName());
                     Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
+                    String place_name = String.valueOf(place.getName());
+                    String place_id_str = place.getId();
+
+                    JSONObject location_data = new JSONObject();
+                    try {
+                        location_data.put("id", place_id_str);
+                        location_data.put("location_name", place_name);
+
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    // Send a POST request to the server
+                    try {
+                        int httpCode = request.post(new JSONObject().toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
                 }
@@ -111,5 +138,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    
+
 }
