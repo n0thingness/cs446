@@ -92,7 +92,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 
 
     private void attemptUpdate() {
-        
+
         // Send the updated data to the backend server
     }
 
