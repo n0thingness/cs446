@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -122,12 +123,20 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    int httpCode = 0;
                     try {
-                        int httpCode = request.post(new JSONObject().toString());
+                        httpCode = request.post(new JSONObject().toString());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-//                    Log.d("requesttest: ", "request finished, any error in trace?" );
+
+                    if (HttpURLConnection.HTTP_OK == httpCode) {
+//                        int response = request.getJSONObjectResponse();
+                        // do something?
+                    } else {
+                        // log error
+                    }
+                    request.close();
 
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
