@@ -20,9 +20,15 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import android.os.AsyncTask;
+//import org.apache.http.client.HttpClient;
+import java.io.IOException;
+
+
 
 
 public class MainActivity extends AppCompatActivity {
+//    HttpRequest request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -72,9 +78,10 @@ public class MainActivity extends AppCompatActivity {
         switch(requestCode) {
             case REQUEST_PLACE_PICKER:
                 if (resultCode == AppCompatActivity.RESULT_OK) {
-//                    Place place = PlacePicker.getPlace(this, data);
-//                    String toastMsg = String.format("Place: %s", place.getName());
-//                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                    Place place = PlacePicker.getPlace(this, data);
+                    String toastMsg = String.format("Place: %s", place.getName());
+                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
                 }
@@ -102,5 +109,28 @@ public class MainActivity extends AppCompatActivity {
     public void openLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    private class PostTask extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... data) {
+            // Create a new HttpClient and Post Header
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://<ip address>:3000");
+
+            try {
+                //add data
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                nameValuePairs.add(new BasicNameValuePair("data", data[0]));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                //execute http post
+                HttpResponse response = httpclient.execute(httppost);
+
+            } catch (ClientProtocolException e) {
+
+            } catch (IOException e) {
+
+            }
+        }
     }
 }
