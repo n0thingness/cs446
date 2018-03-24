@@ -61,9 +61,9 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_update_user_profile);
 //        populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.registration_password);
+        mPasswordView = (EditText) findViewById(R.id.update_password);
 
-        mPasswordConfirmView = (EditText) findViewById(R.id.registration_password_confirm);
+        mPasswordConfirmView = (EditText) findViewById(R.id.update_password_confirm);
         mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -92,6 +92,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 
 
     private void attemptUpdate() {
+        
         // Send the updated data to the backend server
     }
 
