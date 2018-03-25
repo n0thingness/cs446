@@ -37,7 +37,6 @@ import retrofit2.Response;
 
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.chatrAPI;
-import android.os.StrictMode;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -91,9 +90,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         if (sharedPref.getString("auth", null) == null) {
             openLogin(null);
         }
-
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
     }
 
     private boolean checkPlayServices() {
@@ -236,28 +232,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            return true;
+            Location rLocation = null;
 
-//            Location rLocation = null;
-//
-//            String auth = sharedPref.getString("auth", null);
-//
-//            if (auth != null) {
-//                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-//                Call<Location> call = api.newLocation(mLocation);
-//                Response<Location> response = null;
-//                try {
-//                    response = call.execute();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    return false;
-//                }
-//                if (response != null) {
-//                    rLocation = response.body();
-//                    mCode = response.code();
-//                }
-//            }
-//            return (rLocation != null);
+            String auth = sharedPref.getString("auth", null);
+
+            if (auth != null) {
+                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+                Call<Location> call = api.newLocation(mLocation);
+                Response<Location> response = null;
+                try {
+                    response = call.execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                if (response != null) {
+                    rLocation = response.body();
+                    mCode = response.code();
+                }
+            }
+            return (rLocation != null);
         }
 
         @Override
