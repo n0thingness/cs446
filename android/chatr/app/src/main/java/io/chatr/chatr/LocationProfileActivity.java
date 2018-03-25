@@ -1,7 +1,9 @@
 package io.chatr.chatr;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,16 +15,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import io.chatr.chatr.data.model.Location;
+import java.io.IOException;
 
-public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location> {
+import io.chatr.chatr.data.model.Location;
+import io.chatr.chatr.data.remote.ServiceGenerator;
+import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
+
+public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location>, OnCompleteListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -39,7 +48,12 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
      */
     private ViewPager mViewPager;
 
-    int query_id;
+    private SharedPreferences sharedPref;
+
+    private LocationProfileInfoTabFragment infoTabFragment;
+    private LocationProfileUsersTabFragment usersTabFragment;
+
+    private int queryId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +82,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.location_profile_view_pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -77,16 +92,44 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
         Bundle b = getIntent().getExtras();
-        query_id = b.getInt("id");
 
-        getSupportLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Location>)this).forceLoad();
+        if (b != null && b.containsKey("id")) {
+            queryId = b.getInt("id");
+        }
 
+
+
+
+//        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
+
+//        getSupportLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Location>)this).forceLoad();
+
+//        getSupportLoaderManager().initLoader(0, queryBundle, this);
 
         //Location image URL
         String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
         Glide.with(this).load(url).into(top_image);
         setTitle("Williams Fresh Cafe");
+    }
+
+    @Override
+    public void onComplete() {
+        Log.d("location activity", "onComplete: here");
+        int loaderId = 0;
+        Bundle queryBundle = new Bundle();
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<Location> loader = loaderManager.getLoader(loaderId);
+        if (loader == null) {
+            Log.d("loader", "is null");
+            loaderManager.initLoader(loaderId, queryBundle, this).forceLoad();
+        } else {
+            Log.d("loader", "is not null");
+            loaderManager.restartLoader(loaderId, queryBundle, this);
+        }
     }
 
 //    @Override
@@ -113,66 +156,56 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
     @Override
     public Loader<Location> onCreateLoader(int id, Bundle args) {
-        return null;
+        int query_id = -1;
+        if (args.containsKey("query_id")) {
+            query_id = args.getInt("query_id");
+        }
+        Log.d("loader", "onCreateLoader");
+        return new FetchData(this, query_id);
     }
 
     @Override
     public void onLoadFinished(Loader<Location> loader, Location data) {
-
+        Log.d("onLoadFinished", "hi");
+        if (infoTabFragment != null) {
+            infoTabFragment.setAddress("170 University Ave W");
+            infoTabFragment.setPrice("$$");
+            infoTabFragment.setRating("4/5");
+        } else {
+            Log.d("Location Error", "infoTabFragment is null");
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<Location> loader) {
-
-    }
-
-
+    public void onLoaderReset(Loader<Location> loader) {}
 
 
     private static class FetchData extends AsyncTaskLoader<Location> {
 
-        public FetchData(Context context) {
+        private Location mLocation;
+        private int mQueryId;
+
+        public FetchData(Context context, int queryId) {
             super(context);
+            mQueryId = queryId;
         }
 
         @Override
         public Location loadInBackground() {
-//            HttpURLConnection urlConnection = null;
-//            BufferedReader reader = null;
-//            String jsonStr = null;
-//            String line;
+            Log.d("loader", "loadInBackground");
+            return null;
+//            String auth = sharedPref.getString("auth", null);
+//
+//            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+//
+//            Call<Location> call = api.getLocation(query_id);
 //            try {
-//                URL url = new URL("https://itunes.apple.com/search?term=classic");
-//                urlConnection = (HttpURLConnection) url.openConnection();
-//                urlConnection.setRequestMethod("GET");
-//                urlConnection.connect();
-//
-//                // Read the input stream into a String
-//                InputStream inputStream = urlConnection.getInputStream();
-//                StringBuffer buffer = new StringBuffer();
-//                if (inputStream == null) return null;
-//
-//                reader = new BufferedReader(new InputStreamReader(inputStream));
-//                while ((line = reader.readLine()) != null) buffer.append(line);
-//
-//                if (buffer.length() == 0) return null;
-//                jsonStr = buffer.toString();
-//
+//                mLocation = call.execute().body();
 //            } catch (IOException e) {
-//                Log.e("MainActivity", "Error ", e);
+//                e.printStackTrace();
 //                return null;
-//            } finally {
-//                if (urlConnection != null) urlConnection.disconnect();
-//                if (reader != null) {
-//                    try {
-//                        reader.close();
-//                    } catch (final IOException e) {
-//                        Log.e("MainActivity", "Error closing stream", e);
-//                    }
-//                }
 //            }
-
-            return new Location();
+//            return mLocation;
         }
 
         @Override
@@ -200,11 +233,9 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 //            return PlaceholderFragment.newInstance(position + 1);
             switch (position) {
                 case 0:
-                    LocationProfileUsersTabFragment tab1 = new LocationProfileUsersTabFragment();
-                    return tab1;
+                    return new LocationProfileUsersTabFragment();
                 case 1:
-                    LocationProfileInfoTabFragment tab2 = new LocationProfileInfoTabFragment();
-                    return tab2;
+                    return new LocationProfileInfoTabFragment();
                 default:
                     return null;
             }
@@ -214,6 +245,22 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         public int getCount() {
             // Show 3 total pages.
             return 2;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+            // save the appropriate reference depending on position
+            switch (position) {
+                case 0:
+                    usersTabFragment = (LocationProfileUsersTabFragment) createdFragment;
+                    break;
+                case 1:
+                    Log.d("instantiateItem", "instantiateItem: info");
+                    infoTabFragment = (LocationProfileInfoTabFragment) createdFragment;
+                    break;
+            }
+            return createdFragment;
         }
     }
 }
