@@ -3,7 +3,11 @@ package io.chatr.chatr;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,16 +32,27 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.chatr.chatr.data.model.LoginRequest;
+import io.chatr.chatr.data.model.User;
+import io.chatr.chatr.data.remote.ServiceGenerator;
+import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class RegistrationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegistrationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, AsyncResponse {
+
+    private User mUser;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -54,7 +69,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserRegistrationTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mNameView;
@@ -66,6 +81,8 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
     private Button mRegistrationSubmitButton;
 
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +91,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mEmailView = (AutoCompleteTextView) findViewById(R.id.registration_email);
         populateAutoComplete();
 
-        mNameView = (AutoCompleteTextView) findViewById(R.id.registration_name);
+//        mNameView = (AutoCompleteTextView) findViewById(R.id.registration_name);
 
         mPasswordView = (EditText) findViewById(R.id.registration_password);
 
@@ -101,6 +118,8 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
 
         mRegistrationFormView = findViewById(R.id.registration_form);
         mProgressView = findViewById(R.id.registration_progress);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     private void populateAutoComplete() {
@@ -158,13 +177,13 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         }
 
         // Reset errors.
-        mNameView.setError(null);
+//        mNameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
         mPasswordConfirmView.setError(null);
 
         // Store values at the time of the login attempt.
-        String name = mNameView.getText().toString();
+//        String name = mNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String password_confirm = mPasswordConfirmView.getText().toString();
@@ -205,11 +224,11 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         }
 
         // Check for a valid name
-        if (TextUtils.isEmpty(name)) {
-            mNameView.setError(getString(R.string.error_field_required));
-            focusView = mNameView;
-            cancel = true;
-        }
+//        if (TextUtils.isEmpty(name)) {
+//            mNameView.setError(getString(R.string.error_field_required));
+//            focusView = mNameView;
+//            cancel = true;
+//        }
 
 
         if (cancel) {
@@ -220,7 +239,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserRegistrationTask(email, password, RegistrationActivity.this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -233,6 +252,27 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    @Override
+    public void processFinish(boolean success, int code, String message){
+        //Here you will receive the result fired from async class
+        //of onPostExecute(result) method.
+        if (success) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("auth", mUser.getToken());
+            editor.commit();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            if (code == 409) {
+                mEmailView.setError(getString(R.string.error_registered_email));
+                mEmailView.requestFocus();
+            } else {
+                Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     /**
@@ -329,49 +369,45 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserRegistrationTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        private AsyncResponse mDelegate;
+
+        private int mCode;
+
+
+        UserRegistrationTask(String email, String password, AsyncResponse delegate) {
             mEmail = email;
             mPassword = password;
+            mDelegate = delegate;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
 
+            Call<User> call = api.register(new LoginRequest(mEmail, mPassword));
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                Response<User> response = call.execute();
+                mUser = response.body();
+                mCode = response.code();
+            } catch (IOException e) {
+                e.printStackTrace();
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return (mUser != null);
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            if (mDelegate != null) {
+                mDelegate.processFinish(success, mCode, null);
             }
         }
 

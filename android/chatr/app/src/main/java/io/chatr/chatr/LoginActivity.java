@@ -342,29 +342,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-
             chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
-
-//            api.login(new LoginRequest(mEmail, mPassword)).enqueue(new Callback<User>() {
-//                @Override
-//                public void onResponse(Call<User> call, Response<User> response) {
-//
-//                    if(response.isSuccessful()) {
-////                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-//                        mUser = response.body();
-//                        Log.d("response", mUser.getToken());
-//                    } else  {
-//                        Log.d("response", String.valueOf(response.code()));
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<User> call, Throwable t) {
-//                    Log.d("MainActivity", "error loading from API");
-//
-//                }
-//            });
 
             Call<User> call = api.login(new LoginRequest(mEmail, mPassword));
             try {
