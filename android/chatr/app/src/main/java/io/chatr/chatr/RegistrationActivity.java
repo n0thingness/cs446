@@ -407,7 +407,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             mAuthTask = null;
             showProgress(false);
             if (mDelegate != null) {
-                mDelegate.processFinish(success, mCode, null);
+                mDelegate.processFinish(success, mCode, "");
             }
         }
 

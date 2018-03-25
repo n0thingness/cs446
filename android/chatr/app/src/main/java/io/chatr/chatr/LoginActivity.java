@@ -48,7 +48,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, AsyncResponse {
 
     private User mUser;
 
@@ -75,6 +75,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private TextView mRegistrationLinkView;
+
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +116,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);
             }
         });
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -219,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, LoginActivity.this);
+            mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -232,6 +236,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    @Override
+    public void processFinish(boolean success, int code, String message) {
+        if (success) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("auth", mUser.getToken());
+            editor.commit();
+            finish();
+        } else {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.requestFocus();
+        }
     }
 
     /**
@@ -332,12 +349,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private Context mContext;
+        private AsyncResponse mDelegate;
 
-        UserLoginTask(String email, String password, Context context) {
+        UserLoginTask(String email, String password, AsyncResponse delegate) {
             mEmail = email;
             mPassword = password;
-            mContext = context;
+            mDelegate = delegate;
         }
 
         @Override
@@ -360,15 +377,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.mContext);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("auth", mUser.getToken());
-                editor.commit();
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+            if (mDelegate != null) {
+                mDelegate.processFinish(success, 0, "");
             }
         }
 
