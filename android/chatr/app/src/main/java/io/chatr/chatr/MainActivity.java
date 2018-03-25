@@ -36,6 +36,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import io.chatr.chatr.data.model.Location;
+import io.chatr.chatr.data.remote.chatrAPI;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     String API_URL = "http://uw-chatr-api.herokuapp.com";
     String PATH = "/api/v1/location";
 
-
+    private Location mLocation;
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
 
@@ -123,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     int place_price_level = place.getPriceLevel();
                     float place_rating = place.getRating();
 
-
-
+                    // place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating
                     JSONObject location_data = new JSONObject();
                     try {
                         location_data.put("id", place_id_str);
@@ -136,31 +137,40 @@ public class MainActivity extends AppCompatActivity {
                         location_data.put("location_rating", place_rating);
 
                     } catch (JSONException e) {
-                        // TODO Auto-generated catch block
+                        // TODO - better catch block
                         e.printStackTrace();
                     }
                     // Send a POST request to the server
-                    HttpRequest request = null;
-                    try {
-                        request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+//                    HttpRequest request = null;
+//                    try {
+//                        request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    int httpCode = 0;
+//                    try {
+//                        httpCode = request.post(new JSONObject().toString());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    if (HttpURLConnection.HTTP_OK == httpCode) {
+////                        int response = request.getJSONObjectResponse();
+//                        // do something?
+//                    } else {
+//                        // log error
+//                    }
+//                    request.close();
+                    chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
+                    Call<Location> call = api.newLocation(new Location());
+                    try{
+                        mLocation = call.execute().body();
+                    }
+                    catch (IOException e) {
+                      e.printStackTrace();
                     }
 
-                    int httpCode = 0;
-                    try {
-                        httpCode = request.post(new JSONObject().toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (HttpURLConnection.HTTP_OK == httpCode) {
-//                        int response = request.getJSONObjectResponse();
-                        // do something?
-                    } else {
-                        // log error
-                    }
-                    request.close();
 
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
