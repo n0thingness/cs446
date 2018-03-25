@@ -7,64 +7,70 @@ import java.util.List;
  */
 
 public class Location {
-    private String id;
-    private String location_name;
-    private String location_addr;
-    private String location_phone_no;
-    private List<Integer> location_types;
-    private int location_price_level;
-    private float location_rating;
+    private int id;
+    private String gid;
+    private String name;
+    private String address;
+    private String phoneNumber;
+    private List<Integer> locationTypes;
+    private int priceLevel;
+    private float rating;
 
-    public Location(String id, String addr, String location_name, String location_phone_no, List<Integer> location_types, int location_price_level, float location_rating) {
+    //(place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating)
+    public Location(int id, String gid, String name, String address, String phoneNumber, List<Integer> locationTypes, int priceLevel, float rating) {
         this.id = id;
-        this.location_name = location_name;
-        this.location_addr = addr;
-        this.location_phone_no = location_phone_no;
-        this.location_types = location_types;
-        this.location_price_level = location_price_level;
-        this.location_rating = location_rating;
+        this.gid = gid;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.locationTypes = locationTypes;
+        this.priceLevel = priceLevel;
+        this.rating = rating;
     }
 
-    public String getId() {
-        return id;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getGid() {
+        return gid;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setGid(String gid) {
+        this.gid = gid;
     }
 
-    public String getLocationName(){
-        return location_name;
+    public String getName(){
+        return name;
     }
-    public void setLocationName(String location_name){
-        this.location_name = location_name;
+    public void setName(String name){
+        this.name = name;
     }
 
-    public String getLocationPhoneNo(){
-        return location_phone_no;
+    public String getPhoneNumber(){
+        return phoneNumber;
     }
-    public void setLocationPhoneNo(String location_phone_no){
-        this.location_phone_no = location_phone_no;
+    public void setPhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
     }
 
     public List<Integer> getLocationTypes(){
-        return location_types;
+        return locationTypes;
     }
-    public void setLocationTypes(List<Integer>location_types){
-        this.location_types = location_types;
-    }
-
-    public int getLocationPriceLevel(){
-        return location_price_level;
-    }
-    public void setLocationPriceLevel(int location_price_level){
-        this.location_price_level = location_price_level;
+    public void setLocationTypes(List<Integer>locationTypes){
+        this.locationTypes = locationTypes;
     }
 
-    public float getLocationRating(){
-        return location_rating;
+    public int getPriceLevel(){
+        return priceLevel;
     }
-    public void setLocationRating(float location_rating){
-        this.location_rating = location_rating;
+    public void setPriceLevel(int priceLevel){
+        this.priceLevel = priceLevel;
+    }
+
+    public float getRating(){
+        return rating;
+    }
+    public void setRating(float rating){
+        this.rating = rating;
     }
 
 }

@@ -2,6 +2,7 @@ package io.chatr.chatr;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,13 @@ import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.chatr.chatr.data.model.LoginRequest;
 import io.chatr.chatr.data.model.StringData;
+import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
 import retrofit2.Call;
@@ -40,10 +39,7 @@ import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.chatrAPI;
 import android.os.StrictMode;
 
-public class MainActivity extends AppCompatActivity {
-
-    String API_URL = "http://uw-chatr-api.herokuapp.com";
-    String PATH = "/api/v1/location";
+public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -51,12 +47,11 @@ public class MainActivity extends AppCompatActivity {
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
 
-    public MainActivity() throws IOException {
-    }
-
     private TextView mWelcomeTextView;
 
     private SharedPreferences sharedPref;
+
+    private CheckInTask mTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fabCheckIn = (FloatingActionButton) findViewById(R.id.main_check_in_fab);
         fabCheckIn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (mTask != null) {
+                    return;
+                }
                 locationCheckIn();
             }
         });
@@ -94,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
             openLogin(null);
         }
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-        StrictMode.setThreadPolicy(policy);
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
     }
 
     private boolean checkPlayServices() {
@@ -117,9 +114,10 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_PLACE_PICKER:
                 if (resultCode == AppCompatActivity.RESULT_OK) {
                     Place place = PlacePicker.getPlace(this, data);
-                    String toastMsg = String.format("Place: %s", place.getName());
-                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+//                    String toastMsg = String.format("Place: %s", place.getName());
+//                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
+                    int id = -1;
                     String place_name = String.valueOf(place.getName());
                     String place_id_str = place.getId();
                     String place_address = String.valueOf(place.getAddress());
@@ -128,59 +126,13 @@ public class MainActivity extends AppCompatActivity {
                     int place_price_level = place.getPriceLevel();
                     float place_rating = place.getRating();
 
-                    // place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating
-                    JSONObject location_data = new JSONObject();
-                    try {
-                        location_data.put("id", place_id_str);
-                        location_data.put("location_name", place_name);
-                        location_data.put("location_address", place_address);
-                        location_data.put("location_phone_no", place_phone_no);
-                        location_data.put("location_types", place_types);
-                        location_data.put("location_price_level", place_price_level);
-                        location_data.put("location_rating", place_rating);
+                    Log.d("Location id", place_id_str);
 
-                    } catch (JSONException e) {
-                        // TODO - better catch block
-                        e.printStackTrace();
-                    }
-                    // Send a POST request to the server
-//                    HttpRequest request = null;
-//                    try {
-//                        request = new HttpRequest(API_URL + PATH).addHeader("Content-Type", "application/json");
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    int httpCode = 0;
-//                    try {
-//                        httpCode = request.post(new JSONObject().toString());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    if (HttpURLConnection.HTTP_OK == httpCode) {
-////                        int response = request.getJSONObjectResponse();
-//                        // do something?
-//                    } else {
-//                        // log error
-//                    }
-//                    request.close();
-                    chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
-                    Log.d("somta:", "HI I AM HERE1!!!!!!!");
-                    Call<Location> call = api.newLocation(new Location(place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating));
-                    Location mLocation = null;
+                    Location target = new Location(id, place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating);
 
-                    Log.d("somta:", "HI I AM HERE2.1!!!!!!!");
-
-                    try{
-                        mLocation = call.execute().body();
-                    }
-                    catch (IOException e) {
-                      e.printStackTrace();
-                    }
-                    Log.d("somta:", "HI I AM HERE 2 !!!!!!!");
-                    Intent intent = new Intent(this, LocationProfileActivity.class);
-                    startActivity(intent);
+//                    showProgress(true);
+                    mTask = new CheckInTask(target, MainActivity.this);
+                    mTask.execute((Void) null);
                 }
                 break;
             case REQUEST_GOOGLE_PLAY_SERVICES:
@@ -250,5 +202,79 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void processFinish(boolean success, int code, String message){
+        //Here you will receive the result fired from async class
+        //of onPostExecute(result) method.
+        if (success) {
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putString("auth", mUser.getToken());
+//            editor.commit();
+            Intent intent = new Intent(this, LocationProfileActivity.class);
+            startActivity(intent);
+        } else {
+//            if (code == 409) {
+            Toast.makeText(this, "An unknown error occurred", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class CheckInTask extends AsyncTask<Void, Void, Boolean> {
+
+        private Location mLocation;
+        private AsyncResponse mDelegate;
+        private int mCode = -1;
+
+        CheckInTask(Location location, AsyncResponse delegate) {
+            mLocation = location;
+            mDelegate = delegate;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            return true;
+
+//            Location rLocation = null;
+//
+//            String auth = sharedPref.getString("auth", null);
+//
+//            if (auth != null) {
+//                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+//                Call<Location> call = api.newLocation(mLocation);
+//                Response<Location> response = null;
+//                try {
+//                    response = call.execute();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    return false;
+//                }
+//                if (response != null) {
+//                    rLocation = response.body();
+//                    mCode = response.code();
+//                }
+//            }
+//            return (rLocation != null);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mTask = null;
+//            showProgress(false);
+
+            if (mDelegate != null) {
+                mDelegate.processFinish(success, mCode, "");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mTask = null;
+//            showProgress(false);
+        }
+    }
 
 }
