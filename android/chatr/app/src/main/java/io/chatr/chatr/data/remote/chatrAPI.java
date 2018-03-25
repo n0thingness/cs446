@@ -26,6 +26,9 @@ public interface chatrAPI {
     @POST("users/login")
     Call<User> login(@Body LoginRequest body);
 
+    @POST("users/register")
+    Call<User> register(@Body LoginRequest body);
+
     @GET("resource")
     Call<StringData> getResource();
 }
