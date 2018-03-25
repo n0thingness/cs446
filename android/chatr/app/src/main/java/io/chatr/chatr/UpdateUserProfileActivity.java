@@ -59,25 +59,25 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_profile);
-//        populateAutoComplete();
-
-        mPasswordView = (EditText) findViewById(R.id.update_password);
-
-        mPasswordConfirmView = (EditText) findViewById(R.id.update_password_confirm);
-        mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-//                  attemptUpdate();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        mUpdateFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
+////        populateAutoComplete();
+//
+//        mPasswordView = (EditText) findViewById(R.id.update_password);
+//
+//        mPasswordConfirmView = (EditText) findViewById(R.id.update_password_confirm);
+//        mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+//                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+////                  attemptUpdate();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        mUpdateFormView = findViewById(R.id.login_form);
+//        mProgressView = findViewById(R.id.login_progress);
+//
         mUpdateSubmitButton = (Button) findViewById(R.id.update_submit_button);
         mUpdateSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +87,8 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 
             }
         });
+
+
 
     }
 
