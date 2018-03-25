@@ -38,14 +38,13 @@ import retrofit2.Response;
 
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.chatrAPI;
-
+import android.os.StrictMode;
 
 public class MainActivity extends AppCompatActivity {
 
     String API_URL = "http://uw-chatr-api.herokuapp.com";
     String PATH = "/api/v1/location";
 
-    private Location mLocation;
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
 
@@ -94,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         if (sharedPref.getString("auth", null) == null) {
             openLogin(null);
         }
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
     }
 
     private boolean checkPlayServices() {
@@ -163,15 +166,19 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                    request.close();
                     chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
-                    Call<Location> call = api.newLocation(new Location());
+                    Log.d("somta:", "HI I AM HERE1!!!!!!!");
+                    Call<Location> call = api.newLocation(new Location(place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating));
+                    Location mLocation = null;
+
+                    Log.d("somta:", "HI I AM HERE2.1!!!!!!!");
+
                     try{
                         mLocation = call.execute().body();
                     }
                     catch (IOException e) {
                       e.printStackTrace();
                     }
-
-
+                    Log.d("somta:", "HI I AM HERE 2 !!!!!!!");
                     Intent intent = new Intent(this, LocationProfileActivity.class);
                     startActivity(intent);
                 }
