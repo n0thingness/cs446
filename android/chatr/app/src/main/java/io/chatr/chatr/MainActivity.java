@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -114,17 +115,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 //                    Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
                     int id = -1;
-                    String place_name = String.valueOf(place.getName());
-                    String place_id_str = place.getId();
-                    String place_address = String.valueOf(place.getAddress());
-                    String place_phone_no = String.valueOf(place.getPhoneNumber());
-                    List<Integer> place_types = place.getPlaceTypes();
-                    int place_price_level = place.getPriceLevel();
-                    float place_rating = place.getRating();
+                    String gid = place.getId();
+                    String name = String.valueOf(place.getName());
+                    String address = String.valueOf(place.getAddress());
+                    String phoneNumber = String.valueOf(place.getPhoneNumber());
+                    List<Integer> placeTypes = place.getPlaceTypes();
+                    int priceLevel = place.getPriceLevel();
+                    float rating = place.getRating();
 
-                    Log.d("Location id", place_id_str);
+                    Log.d("Location", gid);
+                    Log.d("Location", name);
+                    Log.d("Location", address);
+                    Log.d("Location", phoneNumber);
+                    Log.d("Location", String.valueOf(priceLevel));
+                    Log.d("Location", String.valueOf(rating));
 
-                    Location target = new Location(id, place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating);
+                    Location target = new Location(id, gid, name, address, phoneNumber, placeTypes, priceLevel, rating);
 
 //                    showProgress(true);
                     mTask = new CheckInTask(target, MainActivity.this);
@@ -207,11 +213,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     public void processFinish(boolean success, int code, String message){
         //Here you will receive the result fired from async class
         //of onPostExecute(result) method.
-        if (success) {
+        if (success && !TextUtils.isEmpty(message)) {
 //            SharedPreferences.Editor editor = sharedPref.edit();
 //            editor.putString("auth", mUser.getToken());
 //            editor.commit();
             Intent intent = new Intent(this, LocationProfileActivity.class);
+            intent.putExtra("gid", message);
             startActivity(intent);
         } else {
 //            if (code == 409) {
@@ -228,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         private Location mLocation;
         private AsyncResponse mDelegate;
         private int mCode = -1;
+        private String mMessage = "";
 
         CheckInTask(Location location, AsyncResponse delegate) {
             mLocation = location;
@@ -243,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
             if (auth != null) {
                 chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-                Call<Location> call = api.newLocation(mLocation);
+                Call<Location> call = api.getLocation(mLocation);
                 Response<Location> response = null;
                 try {
                     response = call.execute();
@@ -254,6 +262,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 if (response != null) {
                     rLocation = response.body();
                     mCode = response.code();
+                    mMessage = rLocation.getGid();
+                }
+
+                if (mCode == 404) {
+                    call = api.newLocation(mLocation);
+                    try {
+                        response = call.execute();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                    if (response != null) {
+                        rLocation = response.body();
+                        mCode = response.code();
+                        mMessage = rLocation.getGid();
+                    }
                 }
             }
             return (rLocation != null);
@@ -265,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 //            showProgress(false);
 
             if (mDelegate != null) {
-                mDelegate.processFinish(success, mCode, "");
+                mDelegate.processFinish(success, mCode, mMessage);
             }
         }
 
