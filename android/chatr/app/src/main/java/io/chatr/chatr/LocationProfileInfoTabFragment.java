@@ -1,7 +1,9 @@
 package io.chatr.chatr;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,12 @@ import android.widget.TextView;
  */
 
 public class LocationProfileInfoTabFragment extends Fragment {
+    private TextView tvAddress;
+    private TextView tvPrice;
+    private TextView tvRating;
+
+    private OnCompleteListener mListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -19,11 +27,41 @@ public class LocationProfileInfoTabFragment extends Fragment {
 //        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 //        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
-        TextView address_tv = (TextView) rootView.findViewById(R.id.location_profile_info_address);
-        address_tv.setText("170 University Ave W");
+        Log.d("Fragment", "onCreateView: hi");
 
-        TextView hours_tv = (TextView) rootView.findViewById(R.id.location_profile_info_hours);
-        hours_tv.setText("7am - 12am");
+        tvAddress = (TextView) rootView.findViewById(R.id.location_profile_info_address);
+
+        tvPrice = (TextView) rootView.findViewById(R.id.location_profile_info_price);
+
+        tvRating = (TextView) rootView.findViewById(R.id.location_profile_info_rating);
+
+        tvAddress.setText("default");
+        tvPrice.setText("default");
+        tvRating.setText("default");
+
+        mListener.onComplete();
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.mListener = (OnCompleteListener)context;
+        } catch (final ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnCompleteListener");
+        }
+    }
+
+    public void setAddress(String address) {
+        tvAddress.setText(address);
+    }
+
+    public void setPrice(String price) {
+        tvPrice.setText(price);
+    }
+
+    public void setRating(String rating) {
+        tvRating.setText(rating);
     }
 }
