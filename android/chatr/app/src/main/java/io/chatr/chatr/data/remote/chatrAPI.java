@@ -8,6 +8,7 @@ import io.chatr.chatr.LoginActivity;
 import io.chatr.chatr.data.model.LoginRequest;
 import io.chatr.chatr.data.model.StringData;
 import io.chatr.chatr.data.model.User;
+import io.chatr.chatr.data.model.Location;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -31,4 +32,7 @@ public interface chatrAPI {
 
     @GET("resource")
     Call<StringData> getResource();
+
+    @POST("location")
+    Call<Location> newLocation(@Body Location body);
 }
