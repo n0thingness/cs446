@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
                         PlacePhotoResponse photo = task.getResult();
                         bitmap = photo.getBitmap();
+                        Log.d("bitmap is: ", String.valueOf(bitmap));
                     }
                 });
             }
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     Log.d("Location id", place_id_str);
 //                    getPhotos(place_id_str);
 //                    getPhotos();
-                    Log.d("OnActivityResult: ", "Finished getPhotos call");
+//                    Log.d("OnActivityResult: ", "Finished getPhotos call");
                     Location target = new Location(id, place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating);
 
 //                    showProgress(true);
@@ -286,21 +287,23 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             String auth = sharedPref.getString("auth", null);
 
             if (auth != null) {
-                 Log.d("location ID is: ", mLocation.getGid());
-                 getPhotos(mLocation.getGid());
-//                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-//                Call<Location> call = api.newLocation(mLocation);
-//                Response<Location> response = null;
-//                try {
-//                    response = call.execute();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    return false;
-//                }
-//                if (response != null) {
-//                    rLocation = response.body();
-//                    mCode = response.code();
-//                }
+//                Log.d("location ID is: ", mLocation.getGid());
+                // get a photo of user selected location
+                getPhotos(mLocation.getGid());
+                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+                Call<Location> call = api.newLocation(mLocation);
+                Response<Location> response = null;
+                try {
+                    response = call.execute();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                if (response != null) {
+                    rLocation = response.body();
+                    mCode = response.code();
+                }
+
             }
             return (rLocation != null);
         }
