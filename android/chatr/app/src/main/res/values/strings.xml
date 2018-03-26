@@ -128,5 +128,6 @@
     <string name="location_info_address">Address</string>
     <string name="location_info_price">Price</string>
     <string name="location_info_rating">Rating</string>
-    title_activity_location_profile
+    <string name="location_info_hours">Hours</string>
+    <string name="title_activity_update_user_profile">UpdateUserProfileActivity</string>
 </resources>
