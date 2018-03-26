@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    Bitmap bitmap = null;
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     // Request photos and metadata for the specified place.
-    private void getPhotos(String placeId, Bitmap bitmap) {
+    private void getPhotos(String placeId) {
 //        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
 //        final Bitmap bitmap;
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
@@ -134,11 +135,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     @Override
                     public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
                         PlacePhotoResponse photo = task.getResult();
-                        bitmap.equals(photo.getBitmap()); //photo.getBitmap();
-                    } 
+                        bitmap = photo.getBitmap();
+                    }
                 });
             }
         });
+        assert(bitmap!=null);
+        Log.d("getPhotos: ", "completed function, bitmap should be assigned");
 
     }
 
@@ -162,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
                     // Goal: Obtain link to location image
                     Log.d("Location id", place_id_str);
-
+//                    getPhotos(place_id_str);
+//                    getPhotos();
+                    Log.d("OnActivityResult: ", "Finished getPhotos call");
                     Location target = new Location(id, place_id_str, place_name, place_address, place_phone_no, place_types, place_price_level, place_rating);
 
 //                    showProgress(true);
@@ -281,19 +286,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             String auth = sharedPref.getString("auth", null);
 
             if (auth != null) {
-                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-                Call<Location> call = api.newLocation(mLocation);
-                Response<Location> response = null;
-                try {
-                    response = call.execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                if (response != null) {
-                    rLocation = response.body();
-                    mCode = response.code();
-                }
+                 Log.d("location ID is: ", mLocation.getGid());
+                 getPhotos(mLocation.getGid());
+//                chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+//                Call<Location> call = api.newLocation(mLocation);
+//                Response<Location> response = null;
+//                try {
+//                    response = call.execute();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    return false;
+//                }
+//                if (response != null) {
+//                    rLocation = response.body();
+//                    mCode = response.code();
+//                }
             }
             return (rLocation != null);
         }
