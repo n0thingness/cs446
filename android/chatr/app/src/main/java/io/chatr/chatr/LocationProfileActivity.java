@@ -1,9 +1,11 @@
 package io.chatr.chatr;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,23 +56,28 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
     private LocationProfileInfoTabFragment infoTabFragment;
     private LocationProfileUsersTabFragment usersTabFragment;
 
-    private int queryId = -1;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+
+    private String intentGid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_profile);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.location_profile_toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.location_profile_toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.location_profile_collapsing_toolbar_layout);
 
         ImageView top_image = (ImageView) findViewById(R.id.location_profile_top_image);
 
@@ -97,11 +104,9 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
         Bundle b = getIntent().getExtras();
 
-        if (b != null && b.containsKey("id")) {
-            queryId = b.getInt("id");
+        if (b != null && b.containsKey("gid")) {
+            intentGid = b.getString("gid");
         }
-
-
 
 
 //        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
@@ -113,7 +118,6 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         //Location image URL
         String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
         Glide.with(this).load(url).into(top_image);
-        setTitle("Williams Fresh Cafe");
     }
 
     @Override
@@ -121,6 +125,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         Log.d("location activity", "onComplete: here");
         int loaderId = 0;
         Bundle queryBundle = new Bundle();
+        queryBundle.putString("gid", intentGid);
 
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<Location> loader = loaderManager.getLoader(loaderId);
@@ -162,18 +167,22 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             gid = args.getString("gid");
         }
         Log.d("loader", "onCreateLoader");
-        return new FetchData(this, gid);
+        return new FetchData(LocationProfileActivity.this, gid);
     }
 
     @Override
     public void onLoadFinished(Loader<Location> loader, Location data) {
         Log.d("onLoadFinished", "hi");
-        if (infoTabFragment != null) {
-            infoTabFragment.setAddress("170 University Ave W");
-            infoTabFragment.setPrice("$$");
-            infoTabFragment.setRating("4/5");
-        } else {
-            Log.d("Location Error", "infoTabFragment is null");
+        if (data != null) {
+            this.setTitle(data.getName());
+            mCollapsingToolbarLayout.setTitle(data.getName());
+            if (infoTabFragment != null) {
+                infoTabFragment.setAddress(data.getAddress());
+                infoTabFragment.setPrice(String.valueOf(data.getPriceLevel()));
+                infoTabFragment.setRating(String.valueOf(data.getRating()));
+            } else {
+                Log.d("Location Error", "infoTabFragment is null");
+            }
         }
     }
 
@@ -183,8 +192,6 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
     private static class FetchData extends AsyncTaskLoader<Location> {
 
-        private Location mLocation;
-        private int mQueryId;
         private String mGid;
         private int mCode;
         private Context mContext;
@@ -199,7 +206,6 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         public Location loadInBackground() {
             Location rLocation = null;
             Log.d("loader", "loadInBackground");
-//            return null;
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
             String auth = sharedPref.getString("auth", null);
 
