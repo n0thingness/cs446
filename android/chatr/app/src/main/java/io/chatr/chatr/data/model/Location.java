@@ -6,7 +6,7 @@ package io.chatr.chatr.data.model;
 
 public class Location {
     private int id;
-    private int google_id;
+    private String gid;
     private String name;
     private String address;
     private int priceLevel;
@@ -18,6 +18,14 @@ public class Location {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getGid() {
+        return gid;
+    }
+
+    public void setGid(String gid) {
+        this.gid = gid;
     }
 
 

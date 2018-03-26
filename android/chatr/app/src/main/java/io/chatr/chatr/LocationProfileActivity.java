@@ -30,6 +30,7 @@ import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location>, OnCompleteListener {
 
@@ -156,12 +157,12 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
     @Override
     public Loader<Location> onCreateLoader(int id, Bundle args) {
-        int query_id = -1;
-        if (args.containsKey("query_id")) {
-            query_id = args.getInt("query_id");
+        String gid = "";
+        if (args.containsKey("gid")) {
+            gid = args.getString("gid");
         }
         Log.d("loader", "onCreateLoader");
-        return new FetchData(this, query_id);
+        return new FetchData(this, gid);
     }
 
     @Override
@@ -184,28 +185,47 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
         private Location mLocation;
         private int mQueryId;
+        private String mGid;
+        private int mCode;
+        private Context mContext;
 
-        public FetchData(Context context, int queryId) {
+        public FetchData(Context context, String gid) {
             super(context);
-            mQueryId = queryId;
+            mContext = context;
+            mGid = gid;
         }
 
         @Override
         public Location loadInBackground() {
+            Location rLocation = null;
             Log.d("loader", "loadInBackground");
-            return null;
-//            String auth = sharedPref.getString("auth", null);
-//
-//            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-//
-//            Call<Location> call = api.getLocation(query_id);
-//            try {
-//                mLocation = call.execute().body();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//            return mLocation;
+//            return null;
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String auth = sharedPref.getString("auth", null);
+
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+
+            Location mLocation = new Location();
+            mLocation.setGid(mGid);
+
+            Call<Location> call = api.getLocation(mLocation);
+            Response<Location> response = null;
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            if (response != null) {
+                rLocation = response.body();
+                mCode = response.code();
+            }
+
+            if (mCode == 404) {
+                return null;
+            }
+
+            return rLocation;
         }
 
         @Override

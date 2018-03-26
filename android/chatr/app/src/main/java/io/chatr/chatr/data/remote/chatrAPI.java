@@ -33,6 +33,6 @@ public interface chatrAPI {
     @GET("resource")
     Call<StringData> getResource();
 
-    @GET("location/{id}")
-    Call<Location> getLocation(@Path("id") int id);
+    @GET("location")
+    Call<Location> getLocation(@Body Location body);
 }
