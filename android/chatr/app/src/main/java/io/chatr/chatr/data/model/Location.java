@@ -2,10 +2,6 @@ package io.chatr.chatr.data.model;
 
 import java.util.List;
 
-/**
- * Created by lohit.talasila on 2018-03-25.
- */
-
 public class Location {
     private int id;
     private String gid;
@@ -72,5 +68,4 @@ public class Location {
     public void setRating(float rating){
         this.rating = rating;
     }
-
 }

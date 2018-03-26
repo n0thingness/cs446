@@ -5,6 +5,7 @@ package io.chatr.chatr.data.remote;
  */
 
 import io.chatr.chatr.LoginActivity;
+import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.model.LoginRequest;
 import io.chatr.chatr.data.model.StringData;
 import io.chatr.chatr.data.model.User;

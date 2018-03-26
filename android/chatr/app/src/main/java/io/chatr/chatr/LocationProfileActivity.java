@@ -1,22 +1,38 @@
 package io.chatr.chatr;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-public class LocationProfileActivity extends AppCompatActivity {
+import java.io.IOException;
+
+import io.chatr.chatr.data.model.Location;
+import io.chatr.chatr.data.remote.ServiceGenerator;
+import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
+import retrofit2.Response;
+
+public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location>, OnCompleteListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -32,6 +48,13 @@ public class LocationProfileActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private SharedPreferences sharedPref;
+
+    private LocationProfileInfoTabFragment infoTabFragment;
+    private LocationProfileUsersTabFragment usersTabFragment;
+
+    private int queryId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +83,7 @@ public class LocationProfileActivity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.location_profile_view_pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -69,10 +93,44 @@ public class LocationProfileActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Bundle b = getIntent().getExtras();
+
+        if (b != null && b.containsKey("id")) {
+            queryId = b.getInt("id");
+        }
+
+
+
+
+//        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
+
+//        getSupportLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Location>)this).forceLoad();
+
+//        getSupportLoaderManager().initLoader(0, queryBundle, this);
+
         //Location image URL
         String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
         Glide.with(this).load(url).into(top_image);
         setTitle("Williams Fresh Cafe");
+    }
+
+    @Override
+    public void onComplete() {
+        Log.d("location activity", "onComplete: here");
+        int loaderId = 0;
+        Bundle queryBundle = new Bundle();
+
+        LoaderManager loaderManager = getSupportLoaderManager();
+        Loader<Location> loader = loaderManager.getLoader(loaderId);
+        if (loader == null) {
+            Log.d("loader", "is null");
+            loaderManager.initLoader(loaderId, queryBundle, this).forceLoad();
+        } else {
+            Log.d("loader", "is not null");
+            loaderManager.restartLoader(loaderId, queryBundle, this);
+        }
     }
 
 //    @Override
@@ -97,6 +155,87 @@ public class LocationProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public Loader<Location> onCreateLoader(int id, Bundle args) {
+        String gid = "";
+        if (args.containsKey("gid")) {
+            gid = args.getString("gid");
+        }
+        Log.d("loader", "onCreateLoader");
+        return new FetchData(this, gid);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Location> loader, Location data) {
+        Log.d("onLoadFinished", "hi");
+        if (infoTabFragment != null) {
+            infoTabFragment.setAddress("170 University Ave W");
+            infoTabFragment.setPrice("$$");
+            infoTabFragment.setRating("4/5");
+        } else {
+            Log.d("Location Error", "infoTabFragment is null");
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Location> loader) {}
+
+
+    private static class FetchData extends AsyncTaskLoader<Location> {
+
+        private Location mLocation;
+        private int mQueryId;
+        private String mGid;
+        private int mCode;
+        private Context mContext;
+
+        public FetchData(Context context, String gid) {
+            super(context);
+            mContext = context;
+            mGid = gid;
+        }
+
+        @Override
+        public Location loadInBackground() {
+            Location rLocation = null;
+            Log.d("loader", "loadInBackground");
+//            return null;
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String auth = sharedPref.getString("auth", null);
+
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+
+            Location mLocation = new Location();
+            mLocation.setGid(mGid);
+
+            Call<Location> call = api.getLocation(mLocation);
+            Response<Location> response = null;
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            if (response != null) {
+                rLocation = response.body();
+                mCode = response.code();
+            }
+
+            if (mCode == 404) {
+                return null;
+            }
+
+            return rLocation;
+        }
+
+        @Override
+        public void deliverResult(Location data) {
+            super.deliverResult(data);
+        }
+    }
+
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -114,11 +253,9 @@ public class LocationProfileActivity extends AppCompatActivity {
 //            return PlaceholderFragment.newInstance(position + 1);
             switch (position) {
                 case 0:
-                    LocationProfileUsersTabFragment tab1 = new LocationProfileUsersTabFragment();
-                    return tab1;
+                    return new LocationProfileUsersTabFragment();
                 case 1:
-                    LocationProfileInfoTabFragment tab2 = new LocationProfileInfoTabFragment();
-                    return tab2;
+                    return new LocationProfileInfoTabFragment();
                 default:
                     return null;
             }
@@ -128,6 +265,22 @@ public class LocationProfileActivity extends AppCompatActivity {
         public int getCount() {
             // Show 3 total pages.
             return 2;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+            // save the appropriate reference depending on position
+            switch (position) {
+                case 0:
+                    usersTabFragment = (LocationProfileUsersTabFragment) createdFragment;
+                    break;
+                case 1:
+                    Log.d("instantiateItem", "instantiateItem: info");
+                    infoTabFragment = (LocationProfileInfoTabFragment) createdFragment;
+                    break;
+            }
+            return createdFragment;
         }
     }
 }
