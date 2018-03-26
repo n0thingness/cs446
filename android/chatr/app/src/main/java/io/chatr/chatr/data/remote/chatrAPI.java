@@ -34,8 +34,8 @@ public interface chatrAPI {
     @GET("resource")
     Call<StringData> getResource();
 
-    @GET("location")
-    Call<Location> getLocation(@Body Location body);
+    @GET("location/{gid}")
+    Call<Location> getLocation(@Path("gid") String gid);
 
     @POST("location")
     Call<Location> newLocation(@Body Location body);

@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
             if (auth != null) {
                 chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-                Call<Location> call = api.getLocation(mLocation);
+                Call<Location> call = api.getLocation(mLocation.getGid());
                 Response<Location> response = null;
                 try {
                     response = call.execute();
@@ -262,6 +262,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 if (response != null) {
                     rLocation = response.body();
                     mCode = response.code();
+                }
+                if (rLocation != null) {
                     mMessage = rLocation.getGid();
                 }
 
@@ -276,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     if (response != null) {
                         rLocation = response.body();
                         mCode = response.code();
+                    }
+                    if (rLocation != null) {
                         mMessage = rLocation.getGid();
                     }
                 }

@@ -205,10 +205,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
             chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
 
-            Location mLocation = new Location();
-            mLocation.setGid(mGid);
-
-            Call<Location> call = api.getLocation(mLocation);
+            Call<Location> call = api.getLocation(mGid);
             Response<Location> response = null;
             try {
                 response = call.execute();
