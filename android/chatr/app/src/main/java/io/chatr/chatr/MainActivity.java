@@ -198,6 +198,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         startActivity(intent);
     }
 
+    public void openUpdateProfileActivity(View view){
+        Intent intent = new Intent(this, UpdateUserProfileActivity.class);
+        startActivity(intent);
+    }
+  
     @Override
     public void processFinish(boolean success, int code, String message){
         //Here you will receive the result fired from async class
