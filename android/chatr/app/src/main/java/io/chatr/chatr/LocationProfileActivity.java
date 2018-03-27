@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -25,7 +27,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.tasks.Task;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import io.chatr.chatr.data.model.Location;
@@ -35,6 +47,10 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location>, OnCompleteListener {
+
+    private Bitmap bitmap = null;
+    protected GeoDataClient mGeoDataClient;
+    protected PlaceDetectionClient mPlaceDetectionClient;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -59,6 +75,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
     private Toolbar mToolbar;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+    private ImageView top_image;
+
     private String intentGid;
 
     @Override
@@ -77,9 +95,15 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             }
         });
 
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient.
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.location_profile_collapsing_toolbar_layout);
 
-        ImageView top_image = (ImageView) findViewById(R.id.location_profile_top_image);
+        top_image = (ImageView) findViewById(R.id.location_profile_top_image);
 
         int screenWidthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 
@@ -116,8 +140,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 //        getSupportLoaderManager().initLoader(0, queryBundle, this);
 
         //Location image URL
-        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
-        Glide.with(this).load(url).into(top_image);
+//        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
+//        Glide.with(this).load(url).into(top_image);
     }
 
     @Override
@@ -183,11 +207,48 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             } else {
                 Log.d("Location Error", "infoTabFragment is null");
             }
+
+            getPhotos(data.getGid());
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Location> loader) {}
+
+    // Request photos and metadata for the specified place.
+    private void getPhotos(String placeId) {
+//        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
+//        final Bitmap bitmap;
+        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
+        photoMetadataResponse.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<PlacePhotoMetadataResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
+                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                // Get the attribution text.
+                CharSequence attribution = photoMetadata.getAttributions();
+                // Get a full-size bitmap for the photo.
+                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                photoResponse.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<PlacePhotoResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                        PlacePhotoResponse photo = task.getResult();
+                        bitmap = photo.getBitmap();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        Glide.with(LocationProfileActivity.this).load(stream.toByteArray()).into(top_image);
+                    }
+                });
+            }
+        });
+        assert(bitmap!=null);
+        Log.d("getPhotos: ", "completed function, bitmap should be assigned");
+
+    }
 
 
     private static class FetchData extends AsyncTaskLoader<Location> {
