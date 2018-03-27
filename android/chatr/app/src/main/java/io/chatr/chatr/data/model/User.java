@@ -11,6 +11,7 @@ public class User {
     private String name;
     private String surname;
     private int age;
+    private String gender;
     private String location;
     private String occupation;
     private String interests;
@@ -53,6 +54,14 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public int getAge() {

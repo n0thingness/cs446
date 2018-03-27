@@ -145,7 +145,7 @@ public class UserProfileActivity extends AppCompatActivity implements LoaderMana
         if (data != null) {
             this.setTitle(data.getName() + " " + data.getSurname());
             mCollapsingToolbarLayout.setTitle(data.getName() + " " + data.getSurname());
-            tvInfoGender.setText("Male");
+            tvInfoGender.setText(data.getGender());
             tvInfoAge.setText(String.valueOf(data.getAge()));
             tvInfoOccupation.setText(data.getOccupation());
             tvInfoLocation.setText(data.getLocation());

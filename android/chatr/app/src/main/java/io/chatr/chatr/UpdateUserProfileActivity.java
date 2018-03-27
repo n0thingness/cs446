@@ -51,6 +51,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     private AutoCompleteTextView mName;
     private AutoCompleteTextView mSurname;
     private AutoCompleteTextView mAge;
+    private AutoCompleteTextView mGender;
     private AutoCompleteTextView mLocation;
     private AutoCompleteTextView mOccupation;
     private AutoCompleteTextView mInterests;
@@ -110,6 +111,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
         mName = findViewById(R.id.update_first_name);
         mSurname = findViewById(R.id.update_last_name);
         mAge = findViewById(R.id.update_age);
+        mGender = findViewById(R.id.update_gender);
         mLocation = findViewById(R.id.update_location);
         mOccupation = findViewById(R.id.update_occupation);
         mInterests = findViewById(R.id.update_interests);
@@ -134,6 +136,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
         postData.setName(mName.getText().toString().trim());
         postData.setSurname(mSurname.getText().toString().trim());
         postData.setAge(parseInt(mAge.getText().toString().trim()));
+        postData.setGender(mGender.getText().toString().trim());
         postData.setLocation(mLocation.getText().toString().trim());
         postData.setOccupation(mOccupation.getText().toString().trim());
         postData.setInterests(mInterests.getText().toString().trim());
