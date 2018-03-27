@@ -44,8 +44,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UpdateUserProfileActivity"
-            android:label="@string/title_activity_update_user_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="Update profile"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
