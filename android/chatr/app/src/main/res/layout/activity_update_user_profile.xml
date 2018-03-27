@@ -105,12 +105,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/update_occupation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Occupation"
-                    android:imeActionId="6"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
@@ -122,12 +121,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/update_interests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Interests (Seperate using commas)"
-                    android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionDone"
                     android:maxLines="1"

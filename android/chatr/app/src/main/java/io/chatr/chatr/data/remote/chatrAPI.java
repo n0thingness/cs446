@@ -39,4 +39,7 @@ public interface chatrAPI {
 
     @POST("location")
     Call<Location> newLocation(@Body Location body);
+
+    @POST("users/profile")
+    Call<User> updateProfile(@Body User body);
 }

@@ -262,8 +262,10 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("auth", mUser.getToken());
             editor.commit();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            Intent intent = new Intent(this, MainActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+            Intent intent = new Intent(this, UpdateUserProfileActivity.class);
             startActivity(intent);
         } else {
             if (code == 409) {

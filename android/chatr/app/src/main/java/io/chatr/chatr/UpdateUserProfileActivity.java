@@ -29,18 +29,33 @@ import android.widget.TextView;
 import android.widget.AutoCompleteTextView;
 import android.app.LoaderManager.LoaderCallbacks;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateUserProfileActivity extends AppCompatActivity  {
+import io.chatr.chatr.data.model.LoginRequest;
+import io.chatr.chatr.data.model.User;
+import io.chatr.chatr.data.remote.ServiceGenerator;
+import io.chatr.chatr.data.remote.chatrAPI;
+import retrofit2.Call;
+import retrofit2.Response;
+
+import static java.lang.Integer.parseInt;
+
+public class UpdateUserProfileActivity extends AppCompatActivity implements AsyncResponse  {
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mUpdateFormView;
-    private AutoCompleteTextView mInterestestsView;
-    private EditText mPasswordConfirmView;
+    private AutoCompleteTextView mName;
+    private AutoCompleteTextView mSurname;
+    private AutoCompleteTextView mAge;
+    private AutoCompleteTextView mLocation;
+    private AutoCompleteTextView mOccupation;
+    private AutoCompleteTextView mInterests;
     private Button mUpdateSubmitButton;
+    private ProfileUpdateTask mTask = null;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -83,11 +98,21 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
         mUpdateSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //attemptUpdate();
-                goBackToMainActivity();
+                attemptUpdate();
+//                goBackToMainActivity();
 
             }
         });
+
+        mUpdateFormView = findViewById(R.id.update_profile_scroll_view);
+        mProgressView = findViewById(R.id.update_profile_progress);
+
+        mName = findViewById(R.id.update_first_name);
+        mSurname = findViewById(R.id.update_last_name);
+        mAge = findViewById(R.id.update_age);
+        mLocation = findViewById(R.id.update_location);
+        mOccupation = findViewById(R.id.update_occupation);
+        mInterests = findViewById(R.id.update_interests);
 
 
 //        Toolbar toolbar = findViewById(R.id.user_profile_toolbar);
@@ -104,8 +129,17 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 
 
     private void attemptUpdate() {
+        showProgress(true);
+        User postData = new User();
+        postData.setName(mName.getText().toString().trim());
+        postData.setSurname(mSurname.getText().toString().trim());
+        postData.setAge(parseInt(mAge.getText().toString().trim()));
+        postData.setLocation(mLocation.getText().toString().trim());
+        postData.setOccupation(mOccupation.getText().toString().trim());
+        postData.setInterests(mInterests.getText().toString().trim());
 
-        // Send the updated data to the backend server
+        mTask = new ProfileUpdateTask(postData, UpdateUserProfileActivity.this);
+        mTask.execute((Void) null);
     }
 
     private boolean isEmailValid(String email) {
@@ -154,9 +188,13 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
         }
     }
 
-    public void goBackToMainActivity(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    @Override
+    public void processFinish(boolean success, int code, String message) {
+        if (success) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
     }
 
     private interface ProfileQuery {
@@ -167,5 +205,53 @@ public class UpdateUserProfileActivity extends AppCompatActivity  {
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    public class ProfileUpdateTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final User mPostData;
+        private User mUser;
+
+        private AsyncResponse mDelegate;
+
+        private int mCode;
+
+
+        ProfileUpdateTask(User postData, AsyncResponse delegate) {
+            mPostData = postData;
+            mDelegate = delegate;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
+
+            Call<User> call = api.updateProfile(mPostData);
+            try {
+                Response<User> response = call.execute();
+                mUser = response.body();
+                mCode = response.code();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            return (mUser != null);
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mTask = null;
+            showProgress(false);
+            if (mDelegate != null) {
+                mDelegate.processFinish(success, mCode, "");
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mTask = null;
+            showProgress(false);
+        }
     }
 }
