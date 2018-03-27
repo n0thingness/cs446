@@ -31,8 +31,11 @@ import java.io.IOException;
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
+//import io.chatr.chatr.MainActivity;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static io.chatr.chatr.MainActivity.bitmap;
 
 public class LocationProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Location>, OnCompleteListener {
 
@@ -61,6 +64,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
     private String intentGid;
 
+    public static ImageView top_image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +84,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.location_profile_collapsing_toolbar_layout);
 
-        ImageView top_image = (ImageView) findViewById(R.id.location_profile_top_image);
+        top_image = findViewById(R.id.location_profile_top_image);
 
         int screenWidthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 
@@ -116,8 +121,11 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 //        getSupportLoaderManager().initLoader(0, queryBundle, this);
 
         //Location image URL
-        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
-        Glide.with(this).load(url).into(top_image);
+//        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
+//        Glide.with(this).load(url).into(top_image);
+//        top_image.setImageBitmap(bitmap);
+
+
     }
 
     @Override

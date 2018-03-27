@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    Bitmap bitmap = null;
+    public static Bitmap bitmap = null;
 
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
@@ -124,9 +124,42 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     }
 
     // Request photos and metadata for the specified place.
-    private void getPhotos(String placeId) {
-//        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
-//        final Bitmap bitmap;
+//    private void getPhotos(String placeId) {
+////        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
+////        final Bitmap bitmap;
+//        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
+//        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+//            @Override
+//            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+//                // Get the list of photos.
+//                PlacePhotoMetadataResponse photos = task.getResult();
+//                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+//                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+//                // Get the first photo in the list.
+//                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+//                // Get the attribution text.
+//                CharSequence attribution = photoMetadata.getAttributions();
+//                // Get a full-size bitmap for the photo.
+//                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+//                photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+//                        PlacePhotoResponse photo = task.getResult();
+//                        bitmap = photo.getBitmap();
+//                        Log.d("bitmap is: ", String.valueOf(bitmap));
+//                    }
+//                });
+////                photoMetadataBuffer.release();
+//            }
+//        });
+//        assert(bitmap!=null);
+//        Log.d("getPhotos: ", "completed function, bitmap should be assigned");
+//
+//    }
+
+
+    private void getPhotos(String unused) {
+        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
         photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
             @Override
@@ -145,15 +178,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     @Override
                     public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
                         PlacePhotoResponse photo = task.getResult();
+//                        photoBitmap = photo.getBitmap();
                         bitmap = photo.getBitmap();
-                        Log.d("bitmap is: ", String.valueOf(bitmap));
+                        Log.d("test", "Got the photo?");
+//                        cityPhoto.setImageBitmap(photoBitmap);
+                        top_image.setImageBitmap(bitmap);
+                        Log.d("test", "Should be done by now");
                     }
                 });
             }
         });
-        assert(bitmap!=null);
-        Log.d("getPhotos: ", "completed function, bitmap should be assigned");
-
     }
 
     @Override
