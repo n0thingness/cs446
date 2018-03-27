@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private CheckInTask mTask = null;
 
+    private CircleImageView top_image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +79,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
 
-        CircleImageView top_image = (CircleImageView) findViewById(R.id.main_profile_image);
+        top_image = (CircleImageView) findViewById(R.id.main_profile_image);
         Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+        top_image.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                intent.putExtra("id", 0);
+                startActivity(intent);
+            }
+        });
 
         mWelcomeTextView = (TextView) findViewById(R.id.welcome_text);
 
