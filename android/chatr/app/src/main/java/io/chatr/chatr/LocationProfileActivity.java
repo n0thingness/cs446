@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +43,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import io.chatr.chatr.data.model.Location;
+import io.chatr.chatr.data.model.StringData;
+import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
 import retrofit2.Call;
@@ -78,6 +82,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
     private ImageView top_image;
 
     private String intentGid;
+
+    private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +138,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             intentGid = b.getString("gid");
         }
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
 //        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
 
@@ -160,7 +168,35 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             Log.d("loader", "is not null");
             loaderManager.restartLoader(loaderId, queryBundle, this);
         }
+
+
+
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        String auth = sharedPref.getString("auth", null);
+//
+//        if (auth != null) {
+//            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+//            Call<User> call = api.getMatch();
+//            Response<User> response = null;
+//
+//            try {
+//                response = call.execute();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            User out = response.body();
+////            Log.d("getMatch", String.valueOf(out.getId()));
+//            if (out != null && usersTabFragment != null) {
+//                usersTabFragment.setUsers(out.getId(), out.getName(), out.getSurname());
+//            }
+//        }
+//    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
@@ -210,6 +246,10 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
             getPhotos(data.getGid());
         }
+    }
+
+    public void updateMatch() {
+
     }
 
     @Override
@@ -288,6 +328,20 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             if (mCode == 404) {
                 return null;
             }
+
+            Call<User> callCheckIn = api.checkIn(mGid);
+            Response<User> responseCheckIn = null;
+
+            try {
+                responseCheckIn = callCheckIn.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            User out = responseCheckIn.body();
+            Log.d("Checkin", String.valueOf(out.getId()));
+
 
             return rLocation;
         }

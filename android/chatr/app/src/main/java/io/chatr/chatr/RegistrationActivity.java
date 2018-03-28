@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -120,6 +121,9 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
         mProgressView = findViewById(R.id.registration_progress);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("auth", null);
+        editor.commit();
     }
 
     private void populateAutoComplete() {
@@ -262,6 +266,7 @@ public class RegistrationActivity extends AppCompatActivity implements LoaderCal
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("auth", mUser.getToken());
             editor.commit();
+            Log.d("put auth", mUser.getToken());
 //            Intent intent = new Intent(this, MainActivity.class);
 //            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //            startActivity(intent);

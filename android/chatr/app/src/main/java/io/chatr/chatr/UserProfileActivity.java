@@ -150,7 +150,10 @@ public class UserProfileActivity extends AppCompatActivity implements LoaderMana
             tvInfoOccupation.setText(data.getOccupation());
             tvInfoLocation.setText(data.getLocation());
             String topics = data.getInterests();
-            String[] topicsList = topics.split(",[ ]*");
+            String[] topicsList = new String[0];
+            if (topics != null) {
+                topicsList = topics.split(",[ ]*");
+            }
             int padding = getResources().getDimensionPixelSize(R.dimen.text_bubble_padding);
             topicContainer.removeAllViewsInLayout();
             for( int i = 0; i < topicsList.length; i++ )

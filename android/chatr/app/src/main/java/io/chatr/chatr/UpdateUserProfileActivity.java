@@ -7,11 +7,13 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.AutoCompleteTextView;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     private AutoCompleteTextView mInterests;
     private Button mUpdateSubmitButton;
     private ProfileUpdateTask mTask = null;
+    private SharedPreferences sharedPref;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -116,6 +120,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
         mOccupation = findViewById(R.id.update_occupation);
         mInterests = findViewById(R.id.update_interests);
 
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
 //        Toolbar toolbar = findViewById(R.id.user_profile_toolbar);
 //        setSupportActionBar(toolbar);
@@ -141,8 +146,16 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
         postData.setOccupation(mOccupation.getText().toString().trim());
         postData.setInterests(mInterests.getText().toString().trim());
 
-        mTask = new ProfileUpdateTask(postData, UpdateUserProfileActivity.this);
-        mTask.execute((Void) null);
+        String auth = sharedPref.getString("auth", null);
+        if (auth != null) {
+            mTask = new ProfileUpdateTask(postData, auth, UpdateUserProfileActivity.this);
+            mTask.execute((Void) null);
+        } else {
+            showProgress(false);
+            Toast.makeText(this, "No auth", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     private boolean isEmailValid(String email) {
@@ -217,17 +230,19 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
 
         private AsyncResponse mDelegate;
 
+        private String mAuth;
         private int mCode;
 
 
-        ProfileUpdateTask(User postData, AsyncResponse delegate) {
+        ProfileUpdateTask(User postData, String auth, AsyncResponse delegate) {
             mPostData = postData;
+            mAuth = auth;
             mDelegate = delegate;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            chatrAPI api = ServiceGenerator.createService(chatrAPI.class);
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, mAuth);
 
             Call<User> call = api.updateProfile(mPostData);
             try {

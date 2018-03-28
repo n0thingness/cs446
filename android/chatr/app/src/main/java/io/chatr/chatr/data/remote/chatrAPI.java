@@ -42,4 +42,10 @@ public interface chatrAPI {
 
     @POST("users/profile")
     Call<User> updateProfile(@Body User body);
+
+    @GET("location/{gid}/checkin")
+    Call<User> checkIn(@Path("gid") String gid);
+
+    @GET("users/match")
+    Call<User> getMatch();
 }
