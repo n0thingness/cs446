@@ -138,8 +138,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             intentGid = b.getString("gid");
         }
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
 
 //        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
 

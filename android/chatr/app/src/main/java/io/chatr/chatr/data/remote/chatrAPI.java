@@ -48,4 +48,7 @@ public interface chatrAPI {
 
     @GET("users/match")
     Call<User> getMatch();
+
+    @GET("users/match/clear")
+    Call<User> clearMatch();
 }

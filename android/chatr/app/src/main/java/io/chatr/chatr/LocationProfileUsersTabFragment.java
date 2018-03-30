@@ -7,9 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +14,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
@@ -40,13 +31,20 @@ import retrofit2.Response;
  */
 
 public class LocationProfileUsersTabFragment extends Fragment implements AsyncResponse {
-    String listItem[]={"Dell Inspiron", "HTC One X", "HTC Wildfire S", "HTC Sense",   "HTC Sensation XE"};
 
     private View rootView;
     private ListView lv;
     private ArrayAdapter<String> itemsAdapter;
-    private FetchMatch mTask = null;
-    private Button mButton;
+    private FetchMatch mGetMatchTask = null;
+    private ClearMatch mClearMatchTask = null;
+    private Button getMatchButton;
+    private Button clearMatchButton;
+    private LinearLayout matchView;
+    private TextView matchName;
+    private TextView matchTopics;
+    private TextView matchMessageSelf;
+    private TextView matchMessageOther;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,13 +76,28 @@ public class LocationProfileUsersTabFragment extends Fragment implements AsyncRe
 //            }
 //        });
 
-        mButton = rootView.findViewById(R.id.get_match_button);
+        matchView = rootView.findViewById(R.id.match_view);
+        matchName = rootView.findViewById(R.id.match_name);
+        matchTopics = rootView.findViewById(R.id.match_topics);
+        matchMessageSelf = rootView.findViewById(R.id.match_msg_self);
+        matchMessageOther = rootView.findViewById(R.id.match_msg_other);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+        getMatchButton = rootView.findViewById(R.id.get_match_button);
+        clearMatchButton = rootView.findViewById(R.id.clear_match_button);
+
+        getMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mTask = new FetchMatch(getActivity(), LocationProfileUsersTabFragment.this);
-                mTask.execute((Void) null);
+                mGetMatchTask = new FetchMatch(getActivity(), LocationProfileUsersTabFragment.this);
+                mGetMatchTask.execute((Void) null);
+            }
+        });
+
+        clearMatchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClearMatchTask = new ClearMatch(getActivity(), LocationProfileUsersTabFragment.this);
+                mClearMatchTask.execute((Void) null);
             }
         });
 
@@ -105,10 +118,35 @@ public class LocationProfileUsersTabFragment extends Fragment implements AsyncRe
         });
     }
 
+    public void setMatchInfo(final int user_id, String name) {
+        if (user_id != -1) {
+            matchView.setVisibility(View.VISIBLE);
+            matchName.setText(name);
+            matchName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(rootView.getContext(), UserProfileActivity.class);
+                    intent.putExtra("id", user_id);
+                    startActivity(intent);
+                }
+            });
+            matchTopics.setText("Let's talk about");
+            matchMessageSelf.setText("My message");
+            matchMessageOther.setText("Other message");
+        } else {
+            matchView.setVisibility(View.GONE);
+            matchName.setText("");
+            matchTopics.setText("");
+            matchMessageSelf.setText("");
+            matchMessageOther.setText("");
+        }
+    }
+
     @Override
     public void processFinish(boolean success, int code, String message) {
         if (success) {
-            setUsers(code, message);
+//            setUsers(code, message);
+            setMatchInfo(code, message);
         } else {
             Log.d("LocationUserFragment", "getMatch failed");
         }
@@ -171,7 +209,7 @@ public class LocationProfileUsersTabFragment extends Fragment implements AsyncRe
 
         @Override
         protected void onPostExecute(Boolean success) {
-            mTask = null;
+            mGetMatchTask = null;
             if (mDelegate != null) {
                 mDelegate.processFinish(success, mCode, mMessage);
             }
@@ -179,7 +217,69 @@ public class LocationProfileUsersTabFragment extends Fragment implements AsyncRe
 
         @Override
         protected void onCancelled() {
-            mTask = null;
+            mGetMatchTask = null;
+        }
+    }
+
+    public class ClearMatch extends AsyncTask<Void, Void, Boolean> {
+        private int mCode;
+        private Context mContext;
+        private AsyncResponse mDelegate;
+
+        private String mMessage = "";
+
+
+        public ClearMatch(Context context, AsyncResponse delegate) {
+            mContext = context;
+            mDelegate = delegate;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            User rUser = null;
+            Log.d("clearMatch", "loadInBackground");
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String auth = sharedPref.getString("auth", null);
+
+            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
+
+            Call<User> call = api.clearMatch();
+            Response<User> response = null;
+
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            if (response != null) {
+                rUser= response.body();
+                mCode = response.code();
+            }
+
+            if (mCode == 404) {
+                return null;
+            }
+
+            if (rUser != null) {
+                mCode = rUser.getId();
+                mMessage = rUser.getName() +" " +rUser.getSurname();
+            }
+
+            return (rUser != null);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            mClearMatchTask = null;
+            if (mDelegate != null) {
+                mDelegate.processFinish(success, mCode, mMessage);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mClearMatchTask = null;
         }
     }
 
