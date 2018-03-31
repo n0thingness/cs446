@@ -12,30 +12,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/get_match_button"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Get Match"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:id="@+id/match_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone">
-
-            <Button
-                android:id="@+id/clear_match_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Clear Match"
-                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/location_profile_user_list"
@@ -64,7 +46,34 @@
                 android:id="@+id/match_msg_other"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/set_message_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Set Message"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/clear_match_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Clear Match"
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/get_match_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Get Match"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

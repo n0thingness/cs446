@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import io.chatr.chatr.data.model.Location;
+import io.chatr.chatr.data.model.Match;
 import io.chatr.chatr.data.model.StringData;
 import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.remote.ServiceGenerator;
@@ -329,8 +330,8 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
                 return null;
             }
 
-            Call<User> callCheckIn = api.checkIn(mGid);
-            Response<User> responseCheckIn = null;
+            Call<Match> callCheckIn = api.checkIn(mGid);
+            Response<Match> responseCheckIn = null;
 
             try {
                 responseCheckIn = callCheckIn.execute();
@@ -339,7 +340,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
                 return null;
             }
 
-            User out = responseCheckIn.body();
+            Match out = responseCheckIn.body();
             Log.d("Checkin", String.valueOf(out.getId()));
 
 

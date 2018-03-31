@@ -41,7 +41,7 @@ import retrofit2.Response;
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.chatrAPI;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse {
+public class MainActivity extends AppCompatActivity implements AsyncResponse<String> {
 
     private static final int REQUEST_PLACE_PICKER = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;

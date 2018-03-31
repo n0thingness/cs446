@@ -7,6 +7,7 @@ package io.chatr.chatr.data.remote;
 import io.chatr.chatr.LoginActivity;
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.model.LoginRequest;
+import io.chatr.chatr.data.model.Match;
 import io.chatr.chatr.data.model.StringData;
 import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.model.Location;
@@ -44,11 +45,14 @@ public interface chatrAPI {
     Call<User> updateProfile(@Body User body);
 
     @GET("location/{gid}/checkin")
-    Call<User> checkIn(@Path("gid") String gid);
+    Call<Match> checkIn(@Path("gid") String gid);
 
     @GET("users/match")
-    Call<User> getMatch();
+    Call<Match> getMatch();
 
     @GET("users/match/clear")
-    Call<User> clearMatch();
+    Call<Match> clearMatch();
+
+    @POST("users/match/message")
+    Call<Match> setMatchMessage(@Body StringData body);
 }

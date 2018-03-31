@@ -45,7 +45,7 @@ import retrofit2.Response;
 
 import static java.lang.Integer.parseInt;
 
-public class UpdateUserProfileActivity extends AppCompatActivity implements AsyncResponse  {
+public class UpdateUserProfileActivity extends AppCompatActivity implements AsyncResponse<String>  {
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
