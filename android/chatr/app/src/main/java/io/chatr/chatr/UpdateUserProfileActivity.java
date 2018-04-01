@@ -47,8 +47,6 @@ import static java.lang.Integer.parseInt;
 
 public class UpdateUserProfileActivity extends AppCompatActivity implements AsyncResponse<String>  {
 
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
     private View mProgressView;
     private View mUpdateFormView;
     private AutoCompleteTextView mName;
@@ -80,25 +78,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_profile);
-////        populateAutoComplete();
-//
-//        mPasswordView = (EditText) findViewById(R.id.update_password);
-//
-//        mPasswordConfirmView = (EditText) findViewById(R.id.update_password_confirm);
-//        mPasswordConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-////                  attemptUpdate();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
-//        mUpdateFormView = findViewById(R.id.login_form);
-//        mProgressView = findViewById(R.id.login_progress);
-//
+
         mUpdateSubmitButton = (Button) findViewById(R.id.update_submit_button);
         mUpdateSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,26 +116,82 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
 
 
     private void attemptUpdate() {
-        showProgress(true);
-        User postData = new User();
-        postData.setName(mName.getText().toString().trim());
-        postData.setSurname(mSurname.getText().toString().trim());
-        postData.setAge(parseInt(mAge.getText().toString().trim()));
-        postData.setGender(mGender.getText().toString().trim());
-        postData.setLocation(mLocation.getText().toString().trim());
-        postData.setOccupation(mOccupation.getText().toString().trim());
-        postData.setInterests(mInterests.getText().toString().trim());
+        View focusView = null;
+        boolean cancel = false;
 
-        String auth = sharedPref.getString("auth", null);
-        if (auth != null) {
-            mTask = new ProfileUpdateTask(postData, auth, UpdateUserProfileActivity.this);
-            mTask.execute((Void) null);
-        } else {
-            showProgress(false);
-            Toast.makeText(this, "No auth", Toast.LENGTH_SHORT).show();
+
+
+        String pName = mName.getText().toString().trim();
+        String pSurname = mSurname.getText().toString().trim();
+        String pAge = mAge.getText().toString().trim();
+        String pGender = mGender.getText().toString().trim();
+        String pLocation = mLocation.getText().toString().trim();
+        String pOccuption = mOccupation.getText().toString().trim();
+        String pInterests = mInterests.getText().toString().trim();
+
+        if (TextUtils.isEmpty(pInterests)) {
+            mInterests.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
         }
 
+        if (TextUtils.isEmpty(pOccuption)) {
+            mOccupation.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
 
+        if (TextUtils.isEmpty(pLocation)) {
+            mLocation.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(pGender)) {
+            mGender.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(pAge)) {
+            mAge.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(pSurname)) {
+            mSurname.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(pName)) {
+            mName.setError(getString(R.string.error_field_required));
+            focusView = mName;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            User postData = new User();
+            postData.setName(pName);
+            postData.setSurname(pSurname);
+            postData.setAge(parseInt(pAge));
+            postData.setGender(pGender);
+            postData.setLocation(pLocation);
+            postData.setOccupation(pOccuption);
+            postData.setInterests(pInterests);
+            String auth = sharedPref.getString("auth", null);
+            if (auth != null) {
+                showProgress(true);
+                mTask = new ProfileUpdateTask(postData, auth, UpdateUserProfileActivity.this);
+                mTask.execute((Void) null);
+            } else {
+                showProgress(false);
+                Toast.makeText(this, "No auth", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private boolean isEmailValid(String email) {
@@ -211,16 +247,6 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     public class ProfileUpdateTask extends AsyncTask<Void, Void, Boolean> {

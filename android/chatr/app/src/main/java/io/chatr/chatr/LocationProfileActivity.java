@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -44,8 +43,6 @@ import java.io.IOException;
 
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.model.Match;
-import io.chatr.chatr.data.model.StringData;
-import io.chatr.chatr.data.model.User;
 import io.chatr.chatr.data.remote.ServiceGenerator;
 import io.chatr.chatr.data.remote.chatrAPI;
 import retrofit2.Call;
@@ -139,15 +136,6 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             intentGid = b.getString("gid");
         }
 
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-
-//        infoTabFragment = (LocationProfileInfoTabFragment) getSupportFragmentManager().findFragmentById(R.id.location_profile_info_fragment);
-
-//        getSupportLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Location>)this).forceLoad();
-
-//        getSupportLoaderManager().initLoader(0, queryBundle, this);
-
         //Location image URL
 //        String url = "http://www.simcoedining.com/img/venue_photos/williams-cafe-barrie.jpg";
 //        Glide.with(this).load(url).into(top_image);
@@ -169,56 +157,6 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
             Log.d("loader", "is not null");
             loaderManager.restartLoader(loaderId, queryBundle, this);
         }
-
-
-
-    }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        String auth = sharedPref.getString("auth", null);
-//
-//        if (auth != null) {
-//            chatrAPI api = ServiceGenerator.createService(chatrAPI.class, auth);
-//            Call<User> call = api.getMatch();
-//            Response<User> response = null;
-//
-//            try {
-//                response = call.execute();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            User out = response.body();
-////            Log.d("getMatch", String.valueOf(out.getId()));
-//            if (out != null && usersTabFragment != null) {
-//                usersTabFragment.setUsers(out.getId(), out.getName(), out.getSurname());
-//            }
-//        }
-//    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_tabbed, menu);
-//        return true;
-//    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -249,17 +187,11 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
         }
     }
 
-    public void updateMatch() {
-
-    }
-
     @Override
     public void onLoaderReset(Loader<Location> loader) {}
 
     // Request photos and metadata for the specified place.
     private void getPhotos(String placeId) {
-//        final String placeId = "ChIJa147K9HX3IAR-lwiGIQv9i4";
-//        final Bitmap bitmap;
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
         photoMetadataResponse.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<PlacePhotoMetadataResponse>() {
             @Override
@@ -382,7 +314,7 @@ public class LocationProfileActivity extends AppCompatActivity implements Loader
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 

@@ -177,7 +177,7 @@ public class LocationProfileUsersTabFragment extends Fragment implements AsyncRe
                     startActivity(intent);
                 }
             });
-            matchTopics.setText("Let's talk about");
+            matchTopics.setText("Let's talk about: " +match.getTopics());
             matchMessageSelf.setText("Self message: " +match.getSelfMessage());
             matchMessageOther.setText("Other message: " +match.getOtherMessage());
         } else {

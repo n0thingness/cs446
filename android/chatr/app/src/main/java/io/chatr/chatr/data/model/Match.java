@@ -11,7 +11,7 @@ public class Match {
     private String name;
     private String surname;
 
-    private String interests;
+    private String topics;
 
     private String selfMessage;
     private String otherMessage;
@@ -41,12 +41,12 @@ public class Match {
         this.surname = surname;
     }
 
-    public String getInterests() {
-        return interests;
+    public String getTopics() {
+        return topics;
     }
 
-    public void setInterests(String interests) {
-        this.interests = interests;
+    public void setTopics(String topics) {
+        this.topics = topics;
     }
 
     public String getSelfMessage() {
