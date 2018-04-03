@@ -57,6 +57,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     private AutoCompleteTextView mOccupation;
     private AutoCompleteTextView mInterests;
     private Button mUpdateSubmitButton;
+    private Button mUpdateImageButton;
     private ProfileUpdateTask mTask = null;
     private SharedPreferences sharedPref;
     /**
@@ -78,6 +79,16 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_profile);
+
+        mUpdateImageButton = (Button) findViewById(R.id.update_image_button);
+        mUpdateImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                  openImageUploadActivity(view);
+//                goBackToMainActivity();
+
+            }
+        });
 
         mUpdateSubmitButton = (Button) findViewById(R.id.update_submit_button);
         mUpdateSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +125,10 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
 //        });
     }
 
+    private void openImageUploadActivity(View view){
+        Intent intent = new Intent(this, ProfileImageUpload.class);
+        startActivity(intent);
+    }
 
     private void attemptUpdate() {
         View focusView = null;
