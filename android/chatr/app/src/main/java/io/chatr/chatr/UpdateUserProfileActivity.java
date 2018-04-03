@@ -64,7 +64,7 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     private ProfileUpdateTask mTask = null;
     private SharedPreferences sharedPref;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    public static Bitmap profile_image_bitmap; 
+    public static Bitmap profile_image_bitmap = null; // initially null
 
     /**
      * Id to identity READ_CONTACTS permission request.
