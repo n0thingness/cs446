@@ -177,9 +177,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse<Str
                     if (response.isSuccessful()) {
                         if (response.body().getData() != null) {
                             mWelcomeTextView.setText(response.body().getData());
-                            if (top_image != null) {
+                            if (profile_image_bitmap != null) {
                                 Log.d("Main Activity: ", "image was updated!!! <<<>>>!!>>");
                                 top_image.setImageBitmap(profile_image_bitmap);
+                            }
+                            else{
+//                                Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+                                top_image.setImageResource(R.drawable.placeholder_cat);
                             }
                         }
                     } else {
