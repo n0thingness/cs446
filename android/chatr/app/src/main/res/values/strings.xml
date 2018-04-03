@@ -130,4 +130,5 @@
     <string name="location_info_rating">Rating</string>
     <string name="location_info_hours">Hours</string>
     <string name="title_activity_update_user_profile">UpdateUserProfileActivity</string>
+    <string name="title_activity_profile_image_upload">ProfileImageUpload</string>
 </resources>

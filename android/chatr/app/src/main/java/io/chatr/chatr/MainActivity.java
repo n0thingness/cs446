@@ -41,6 +41,8 @@ import retrofit2.Response;
 import io.chatr.chatr.data.model.Location;
 import io.chatr.chatr.data.remote.chatrAPI;
 
+import static io.chatr.chatr.UpdateUserProfileActivity.profile_image_bitmap;
+
 public class MainActivity extends AppCompatActivity implements AsyncResponse<String> {
 
     private static final int REQUEST_PLACE_PICKER = 1001;
@@ -74,7 +76,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse<Str
         });
 
         top_image = (CircleImageView) findViewById(R.id.main_profile_image);
-        Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+        if (profile_image_bitmap != null){
+//            top_image.setImageBitmap(profile_image_bitmap);
+              Glide.with(this).load(profile_image_bitmap).into(top_image);
+        }
+        else {
+            Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+        }
         top_image.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
@@ -169,6 +177,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse<Str
                     if (response.isSuccessful()) {
                         if (response.body().getData() != null) {
                             mWelcomeTextView.setText(response.body().getData());
+                            if (profile_image_bitmap != null) {
+                                Log.d("Main Activity: ", "image was updated!!! <<<>>>!!>>");
+                                top_image.setImageBitmap(profile_image_bitmap);
+                            }
+                            else{
+//                                Glide.with(this).load(R.drawable.placeholder_cat).into(top_image);
+                                top_image.setImageResource(R.drawable.placeholder_cat);
+                            }
                         }
                     } else {
                         mWelcomeTextView.setText("Failed");

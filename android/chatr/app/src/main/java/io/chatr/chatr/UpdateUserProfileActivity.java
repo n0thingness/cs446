@@ -9,10 +9,12 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +23,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -57,8 +60,12 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     private AutoCompleteTextView mOccupation;
     private AutoCompleteTextView mInterests;
     private Button mUpdateSubmitButton;
+    private Button mUpdateImageButton;
     private ProfileUpdateTask mTask = null;
     private SharedPreferences sharedPref;
+    private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
+    public static Bitmap profile_image_bitmap = null; // initially null
+
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -78,6 +85,21 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_profile);
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        mUpdateImageButton = (Button) findViewById(R.id.update_image_button);
+        mUpdateImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                  openImageUploadActivity(view);
+//                goBackToMainActivity();
+                  Log.d("updateUserProfile: ", "BUTTON WAS CLICKED!!!!!!!!!>>><<<");
+                  onPickImage(view);
+
+            }
+        });
 
         mUpdateSubmitButton = (Button) findViewById(R.id.update_submit_button);
         mUpdateSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +136,29 @@ public class UpdateUserProfileActivity extends AppCompatActivity implements Asyn
 //        });
     }
 
+    public void onPickImage(View view) {
+        Log.d("updateUserProfile: ", "GOING TO PICK IMAGE!!!!!!!!!>>><<<");
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent(this);
+        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                profile_image_bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                // TODO use bitmap
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
+    private void openImageUploadActivity(View view){
+        Intent intent = new Intent(this, ProfileImageUpload.class);
+        startActivity(intent);
+    }
 
     private void attemptUpdate() {
         View focusView = null;
